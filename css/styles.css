@@ -110,6 +110,44 @@ body {
   overflow: hidden;
 }
 
+.backdrop-banners,
+.backdrop-crest,
+.backdrop-castle {
+  position: absolute;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.backdrop-banners {
+  top: clamp(8px, 1.6vw, 24px);
+  left: 50%;
+  width: min(94vw, 1120px);
+  max-height: 48vh;
+  object-fit: contain;
+  transform: translateX(-50%);
+  opacity: .9;
+  filter: drop-shadow(0 16px 26px rgba(0,0,0,.55)) saturate(1.05);
+}
+
+.backdrop-crest {
+  top: clamp(86px, 13vw, 180px);
+  left: 50%;
+  width: clamp(170px, 22vw, 340px);
+  transform: translateX(-50%);
+  opacity: .8;
+  filter: drop-shadow(0 0 28px rgba(236,132,42,.62)) drop-shadow(0 16px 22px rgba(0,0,0,.55));
+}
+
+.backdrop-castle {
+  left: 50%;
+  bottom: -16px;
+  width: min(82vw, 760px);
+  transform: translateX(-50%);
+  opacity: .44;
+  filter: drop-shadow(0 10px 22px rgba(0,0,0,.62)) saturate(.9);
+}
+
 .house-banner {
   position: absolute;
   top: 0;
@@ -382,6 +420,24 @@ body {
     top: 34px;
     width: 168px;
     opacity: .34;
+  }
+
+  .backdrop-banners {
+    top: 10px;
+    width: 760px;
+    max-width: none;
+    opacity: .42;
+  }
+
+  .backdrop-crest {
+    top: 86px;
+    width: 160px;
+    opacity: .35;
+  }
+
+  .backdrop-castle {
+    width: 560px;
+    opacity: .28;
   }
 }
 
