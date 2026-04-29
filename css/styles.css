@@ -103,11 +103,16 @@ body {
 
 /* ── House Banner Backdrop ─────────────────────────────────── */
 .house-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
+  position: relative;
+  height: clamp(260px, 42vh, 520px);
+  margin: 14px 0 26px;
+  border-radius: 12px;
+  border: 1px solid rgba(201,168,76,.28);
   overflow: hidden;
+  background:
+    radial-gradient(ellipse 80% 70% at 50% 30%, rgba(201,168,76,.14) 0%, transparent 60%),
+    linear-gradient(135deg, rgba(6,4,15,.62), rgba(22,12,13,.38));
+  box-shadow: 0 18px 46px rgba(0,0,0,.38), inset 0 1px 0 rgba(255,236,170,.08);
 }
 
 .backdrop-crest {
@@ -115,6 +120,52 @@ body {
   display: block;
   user-select: none;
   -webkit-user-drag: none;
+}
+
+.backdrop-crest {
+  top: 50%;
+  left: 50%;
+  width: min(520px, 78%);
+  max-height: 86%;
+  object-fit: contain;
+  transform: translate(-50%, -50%);
+  opacity: .9;
+  filter: drop-shadow(0 0 34px rgba(230,111,24,.68)) drop-shadow(0 18px 28px rgba(0,0,0,.64));
+}
+
+.house-flag {
+  position: absolute;
+  top: 0;
+  width: clamp(92px, 10vw, 156px);
+  height: 100%;
+  object-fit: contain;
+  object-position: top center;
+  user-select: none;
+  -webkit-user-drag: none;
+  opacity: .72;
+  filter: drop-shadow(0 20px 22px rgba(0,0,0,.62)) saturate(.98);
+}
+
+.house-flag-gryf {
+  left: max(10px, calc(50% - 520px));
+  transform: rotate(-2.5deg);
+}
+
+.house-flag-huff {
+  left: max(104px, calc(50% - 390px));
+  transform: translateY(34px) rotate(2deg);
+  opacity: .58;
+}
+
+.house-flag-raven {
+  right: max(104px, calc(50% - 390px));
+  transform: translateY(34px) rotate(-2deg);
+  opacity: .58;
+}
+
+.house-flag-slyth {
+  right: max(10px, calc(50% - 520px));
+  transform: rotate(2.5deg);
 }
 
 .house-flag {
@@ -417,6 +468,29 @@ body {
 
 /* Скрываем часть декораций на маленьких экранах */
 @media (max-width: 600px) {
+   .house-backdrop {
+  height: 260px;
+  margin: 10px 0 20px;
+}
+
+.house-flag {
+  width: 76px;
+  opacity: .24;
+}
+
+.house-flag-gryf { left: -30px; }
+.house-flag-huff { left: 34px; transform: translateY(28px) rotate(2deg); }
+.house-flag-raven { right: 34px; transform: translateY(28px) rotate(-2deg); }
+.house-flag-slyth { right: -30px; }
+
+.backdrop-crest {
+  top: 50%;
+  width: 210px;
+  max-height: 86%;
+  transform: translate(-50%, -50%);
+  opacity: .72;
+}
+   
   .deco-hallows { display: none; }
   .deco-train   { display: none; }
   .deco-wand    { top: 2%; }
