@@ -6,7 +6,7 @@
   <title>Конкурс Факультетов</title>
 
   <!-- Styles -->
-  <link rel="stylesheet" href="css/styles.css?v=crests-1">
+  <link rel="stylesheet" href="css/styles.css?v=ratings-1">
 
   <!--
     Когда будет готов FastAPI бэкенд:
@@ -202,9 +202,29 @@
       <!-- заполняется из app.js → renderEditor() -->
     </section>
 
-    <!-- Счёт факультетов -->
-    <section class="scoreboard" id="scoreboard" aria-label="Счёт факультетов">
+    <!-- Общий рейтинг команд -->
+    <section class="scoreboard" id="scoreboard" aria-label="Общий рейтинг команд">
       <!-- заполняется из app.js → renderScoreboard() -->
+    </section>
+
+    <!-- Общий рейтинг операторов -->
+    <section class="operator-ranking-section" aria-label="Общий рейтинг операторов">
+      <div class="operator-ranking-header">
+        <div>
+          <div class="section-kicker">Индивидуальный зачёт</div>
+          <h2 class="section-title">Общий рейтинг операторов</h2>
+        </div>
+        <p class="section-help">Место определяется по сумме баллов за выбранную неделю или за весь месяц. Чем больше баллов, тем выше позиция.</p>
+      </div>
+      <div class="ranking-table-head" aria-hidden="true">
+        <span>Место</span>
+        <span>Оператор</span>
+        <span>Факультет</span>
+        <span>Баллы</span>
+      </div>
+      <div class="ranking-list" id="ranking-list">
+        <!-- заполняется из app.js → renderRanking() -->
+      </div>
     </section>
 
     <!-- Карточки факультетов -->
@@ -212,18 +232,10 @@
       <!-- заполняется из app.js → renderFacultyCards() -->
     </section>
 
-    <!-- Общий рейтинг -->
-    <section class="ranking-section" id="ranking-section" aria-label="Общий рейтинг">
-      <div class="ranking-header">⚡ Общий рейтинг операторов</div>
-      <div class="ranking-list" id="ranking-list">
-        <!-- заполняется из app.js → renderRanking() -->
-      </div>
-    </section>
-
   </div>
 
   <!-- App (подключить последним) -->
-  <script src="js/app.js?v=crests-1"></script>
+  <script src="js/app.js?v=ratings-1"></script>
 
 </body>
 </html>

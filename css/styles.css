@@ -806,16 +806,76 @@ body {
 
 /* ── Scoreboard Banner ─────────────────────────────────────── */
 .scoreboard {
-  background: rgba(201,168,76,.07);
-  border: 1px solid rgba(201,168,76,.25);
+  background:
+    linear-gradient(135deg, rgba(16,12,24,.96), rgba(42,22,12,.94)),
+    rgba(16,12,24,.96);
+  border: 1px solid rgba(201,168,76,.46);
   border-radius: 8px;
-  padding: 20px 24px;
-  margin-bottom: 32px;
+  padding: 22px 24px 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 16px 42px rgba(0,0,0,.38), inset 0 1px 0 rgba(255,255,255,.06);
 }
 
 .scoreboard-header {
-  text-align: center;
-  margin-bottom: 16px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.section-kicker {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: rgba(201,168,76,.72);
+}
+
+.section-title {
+  margin-top: 4px;
+  font-family: 'Cinzel', serif;
+  font-size: clamp(20px, 3vw, 30px);
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--parchment);
+  text-shadow: 0 2px 12px rgba(0,0,0,.55);
+}
+
+.section-help {
+  max-width: 520px;
+  color: rgba(244,232,193,.84);
+  font-size: 15px;
+  line-height: 1.35;
+}
+
+.score-summary {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  max-width: 500px;
+}
+
+.score-summary span,
+.score-summary strong {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  border: 1px solid rgba(201,168,76,.32);
+  border-radius: 4px;
+  background: rgba(244,232,193,.1);
+  color: rgba(244,232,193,.86);
+  padding: 5px 10px;
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: .05em;
+}
+
+.score-summary strong {
+  background: rgba(201,168,76,.22);
+  color: var(--gold-accent);
 }
 
 .score-list {
@@ -834,18 +894,19 @@ body {
 
 .score-faculty-card {
   min-width: 0;
-  padding: 14px 12px;
+  padding: 16px 12px 14px;
   text-align: center;
-  border: 1px solid rgba(201,168,76,.16);
+  border: 1px solid rgba(201,168,76,.34);
   border-radius: 6px;
-  background: rgba(6,4,15,.28);
+  background: rgba(244,232,193,.92);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.5), 0 8px 18px rgba(0,0,0,.2);
 }
 
 .score-rank {
   font-family: 'Cinzel', serif;
   font-size: 11px;
   line-height: 1;
-  color: rgba(201,168,76,.45);
+  color: rgba(44,24,16,.62);
 }
 
 .score-faculty-name {
@@ -859,8 +920,9 @@ body {
   letter-spacing: .1em;
   line-height: 1.25;
   text-transform: uppercase;
-  color: rgba(201,168,76,.6);
+  color: var(--ink);
   overflow-wrap: anywhere;
+  min-height: 34px;
 }
 
 .score-crest-img {
@@ -876,6 +938,17 @@ body {
   font-size: 36px;
   font-weight: 700;
   line-height: 1;
+  margin-top: 8px;
+}
+
+.score-caption {
+  margin-top: 3px;
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: rgba(44,24,16,.55);
 }
 
 .score-center { text-align: center; }
@@ -896,6 +969,15 @@ body {
 }
 
 @media (max-width: 900px) {
+  .scoreboard-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .score-summary {
+    justify-content: flex-start;
+  }
+
   .score-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1115,45 +1197,70 @@ table.operators tbody tr:hover {
 }
 
 /* ── Overall Ranking ───────────────────────────────────────── */
-.ranking-section {
-  background: rgba(244,232,193,.04);
-  border: 1px solid rgba(201,168,76,.2);
+.operator-ranking-section {
+  background:
+    linear-gradient(135deg, rgba(244,232,193,.96), rgba(232,213,160,.94)),
+    var(--parchment);
+  border: 1px solid rgba(201,168,76,.5);
   border-radius: 8px;
   overflow: hidden;
+  margin-bottom: 28px;
+  box-shadow: 0 14px 34px rgba(0,0,0,.28);
 }
 
-.ranking-header {
-  padding: 16px 24px;
-  background: rgba(201,168,76,.08);
-  border-bottom: 1px solid rgba(201,168,76,.2);
+.operator-ranking-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px 24px;
+  background: linear-gradient(135deg, rgba(44,24,16,.94), rgba(87,43,18,.92));
+  border-bottom: 2px solid rgba(201,168,76,.58);
+}
+
+.operator-ranking-header .section-title,
+.operator-ranking-header .section-help {
+  color: var(--parchment);
+}
+
+.ranking-table-head {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1.3fr) minmax(140px, .8fr) 100px;
+  gap: 14px;
+  padding: 12px 24px;
+  background: rgba(44,24,16,.12);
+  border-bottom: 1px solid rgba(44,24,16,.16);
+  color: rgba(44,24,16,.62);
   font-family: 'Cinzel', serif;
-  font-size: 15px;
+  font-size: 10px;
   font-weight: 700;
   letter-spacing: .1em;
-  color: var(--gold-accent);
-  text-align: center;
+  text-transform: uppercase;
 }
 
 .ranking-list {
-  padding: 16px 24px;
+  padding: 14px 24px 20px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 7px;
 }
 
 .ranking-row {
   display: grid;
-  grid-template-columns: 40px minmax(0, 1fr) minmax(100px, auto) 70px;
+  grid-template-columns: 72px minmax(0, 1.3fr) minmax(140px, .8fr) 100px;
   align-items: center;
-  gap: 12px;
-  padding: 10px 14px;
-  background: rgba(244,232,193,.06);
+  gap: 14px;
+  padding: 11px 14px;
+  background: rgba(255,255,255,.72);
   border-radius: 6px;
-  border: 1px solid rgba(255,255,255,.05);
-  transition: background .2s;
+  border: 1px solid rgba(44,24,16,.1);
+  transition: background .2s, transform .2s, box-shadow .2s;
 }
 
-.ranking-row:hover { background: rgba(244,232,193,.1); }
+.ranking-row:hover {
+  background: rgba(255,255,255,.92);
+  box-shadow: 0 6px 16px rgba(44,24,16,.12);
+  transform: translateY(-1px);
+}
 
 .ranking-pos {
   font-family: 'Cinzel', serif;
@@ -1165,7 +1272,7 @@ table.operators tbody tr:hover {
 .ranking-name {
   font-size: 15px;
   font-weight: 600;
-  color: var(--parchment);
+  color: var(--ink);
   min-width: 0;
   overflow-wrap: anywhere;
 }
@@ -1178,10 +1285,11 @@ table.operators tbody tr:hover {
   font-family: 'Cinzel', serif;
   font-size: 10px;
   letter-spacing: .06em;
-  padding: 3px 8px;
+  padding: 4px 8px;
   border-radius: 3px;
   text-align: center;
   white-space: nowrap;
+  border: 1px solid rgba(44,24,16,.08);
 }
 
 .ranking-crest-img {
@@ -1193,19 +1301,52 @@ table.operators tbody tr:hover {
 
 .ranking-pts {
   font-family: 'Cinzel', serif;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
   text-align: right;
   white-space: nowrap;
 }
 
+.ranking-mobile-label {
+  display: none;
+}
+
 @media (max-width: 640px) {
+  .operator-ranking-header {
+    flex-direction: column;
+    padding: 18px;
+  }
+
+  .ranking-table-head {
+    display: none;
+  }
+
+  .ranking-list {
+    padding: 14px;
+  }
+
   .ranking-row {
-    grid-template-columns: 32px minmax(0, 1fr) 64px;
+    grid-template-columns: 48px minmax(0, 1fr) 76px;
+    gap: 10px;
   }
 
   .ranking-faculty-tag {
     display: none;
+  }
+
+  .ranking-mobile-label {
+    display: block;
+    margin-bottom: 2px;
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: rgba(44,24,16,.46);
+  }
+
+  .ranking-pts {
+    font-size: 16px;
   }
 }
 
@@ -1243,10 +1384,10 @@ table.operators tbody tr:hover {
 .raven .pts-value            { color: var(--raven-bronze); }
 
 /* ── Scoreboard Point Colors ───────────────────────────────── */
-.gryf-score  { color: var(--gryf-red-light); }
-.slyth-score { color: #2a9d5f; }
-.huff-score  { color: var(--huff-yellow); }
-.raven-score { color: var(--raven-bronze); }
+.gryf-score  { color: #9b0001; }
+.slyth-score { color: #146238; }
+.huff-score  { color: #8a6500; }
+.raven-score { color: #624216; }
 
 /* ── Ranking Faculty Tags ──────────────────────────────────── */
 .tag-gryf  { background: rgba(174,0,1,.2);   color: #e05050; }

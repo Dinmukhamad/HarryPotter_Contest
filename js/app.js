@@ -320,6 +320,10 @@ function buildRankBadge(globalRank) {
   return `<span class="rank-badge ${cls}">${globalRank}</span>`;
 }
 
+function getPeriodLabel(weekIdx) {
+  return weekIdx < 4 ? `Неделя ${weekIdx + 1}` : 'Итоги месяца';
+}
+
 function renderCrest(fac, className = 'faculty-crest-img') {
   if (!fac.crest) return fac.icon;
   return `<img class="${className}" src="${fac.crest}" alt="${escapeHtml(fac.name)}">`;
@@ -335,21 +339,26 @@ async function renderScoreboard(weekIdx) {
   const leaderDiff = second ? first.total - second.total : 0;
   const scoreItems = totals.map((fac, idx) => `
     <div class="score-faculty score-faculty-card">
-      <div class="score-rank">#${idx + 1}</div>
+      <div class="score-rank">Место ${idx + 1}</div>
       <div class="score-faculty-name">
         ${renderCrest(fac, 'score-crest-img')}
         <span>${fac.name}</span>
       </div>
       <div class="score-points ${fac.scoreCls}">${fmtPts(fac.total)}</div>
+      <div class="score-caption">баллов</div>
     </div>
   `).join('');
 
   document.getElementById('scoreboard').innerHTML = `
     <div class="scoreboard-header">
-      <div class="score-vs">СЧЁТ ФАКУЛЬТЕТОВ</div>
-      <div class="score-leader">🏆 Ведёт: ${first.name}</div>
-      <div style="font-size:11px;color:rgba(201,168,76,.4);margin-top:4px;font-family:'Cinzel',serif;">
-        +${fmtPts(leaderDiff)} очков
+      <div>
+        <div class="section-kicker">Командный зачёт</div>
+        <h2 class="section-title">Общий рейтинг команд</h2>
+      </div>
+      <div class="score-summary">
+        <span>${getPeriodLabel(weekIdx)}</span>
+        <strong>Лидер: ${first.name}</strong>
+        <span>Отрыв: +${fmtPts(leaderDiff)} баллов</span>
       </div>
     </div>
     <div class="score-list">${scoreItems}</div>
@@ -469,10 +478,19 @@ async function renderRanking(weekIdx) {
     const color = posColors[pos] || 'rgba(201,168,76,.4)';
     return `
       <div class="ranking-row">
-        <div class="ranking-pos" style="color:${color}">${pos}</div>
-        <div class="ranking-name">${escapeHtml(op.name)}</div>
+        <div class="ranking-pos" style="color:${color}">
+          <span class="ranking-mobile-label">Место</span>
+          ${pos}
+        </div>
+        <div class="ranking-name">
+          <span class="ranking-mobile-label">Оператор</span>
+          ${escapeHtml(op.name)}
+        </div>
         <div class="ranking-faculty-tag ${op.fac.tagCls}">${renderCrest(op.fac, 'ranking-crest-img')} ${escapeHtml(op.fac.name)}</div>
-        <div class="ranking-pts ${op.fac.scoreCls}">${fmtPts(op.pts)}</div>
+        <div class="ranking-pts ${op.fac.scoreCls}">
+          <span class="ranking-mobile-label">Баллы</span>
+          ${fmtPts(op.pts)}
+        </div>
       </div>`;
   }).join('');
 }
