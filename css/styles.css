@@ -377,9 +377,11 @@ body {
 }
 
 .editor-toolbar,
+.editor-locked,
 .editor-faculty-header,
 .editor-add-metric,
-.editor-add-operator {
+.editor-add-operator,
+.admin-login {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -467,6 +469,11 @@ body {
   background: rgba(201,168,76,.22);
 }
 
+.editor-btn.ghost {
+  background: transparent;
+  color: rgba(201,168,76,.72);
+}
+
 .editor-icon-btn {
   width: 34px;
   padding: 0;
@@ -484,6 +491,23 @@ body {
 .editor-select:disabled {
   opacity: .45;
   cursor: not-allowed;
+}
+
+.editor-locked {
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.admin-login {
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.admin-error {
+  min-width: 120px;
+  color: #e06a5f;
+  font-size: 13px;
+  font-weight: 600;
 }
 
 .editor-metrics {
