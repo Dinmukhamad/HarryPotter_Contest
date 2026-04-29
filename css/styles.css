@@ -34,7 +34,7 @@
 /* ── Base ──────────────────────────────────────────────────── */
 body {
   font-family: 'Crimson Text', Georgia, serif;
-  background: #d9cba7;
+  background: #351003;
   color: var(--ink);
   min-height: 100vh;
   overflow-x: hidden;
@@ -47,11 +47,12 @@ body {
   pointer-events: none;
   z-index: 0;
   background:
-    linear-gradient(180deg, rgba(245,237,206,.92) 0%, rgba(198,215,222,.86) 36%, rgba(229,205,150,.84) 72%, rgba(147,113,86,.9) 100%),
-    radial-gradient(ellipse 72% 40% at 50% 4%, rgba(255,249,218,.95) 0%, rgba(255,249,218,.35) 42%, transparent 72%),
-    radial-gradient(ellipse 62% 36% at 18% 26%, rgba(162,125,190,.25) 0%, transparent 68%),
-    radial-gradient(ellipse 58% 38% at 82% 22%, rgba(94,142,170,.24) 0%, transparent 70%),
-    #e2d4ad;
+    radial-gradient(ellipse 42% 30% at 50% 24%, rgba(208,119,30,.58) 0%, rgba(118,52,13,.35) 42%, transparent 72%),
+    radial-gradient(ellipse 75% 55% at 50% 50%, rgba(116,47,11,.55) 0%, transparent 70%),
+    linear-gradient(135deg, rgba(255,214,120,.05) 0 12%, transparent 12% 24%, rgba(255,214,120,.04) 24% 36%, transparent 36% 48%),
+    linear-gradient(45deg, rgba(0,0,0,.2) 0 25%, transparent 25% 50%, rgba(255,255,255,.025) 50% 75%, transparent 75%),
+    #351003;
+  background-size: auto, auto, 42px 42px, 28px 28px, auto;
 }
 
 .stars::before {
@@ -59,17 +60,14 @@ body {
   position: absolute;
   inset: 0;
   background-image:
-    radial-gradient(2px 2px at  8% 12%, rgba(255,255,255,.72) 0%, transparent 58%),
-    radial-gradient(2px 2px at 18% 34%, rgba(255,250,210,.64) 0%, transparent 58%),
-    radial-gradient(2px 2px at 33% 18%, rgba(255,255,255,.7) 0%, transparent 58%),
-    radial-gradient(2px 2px at 49% 10%, rgba(255,245,180,.74) 0%, transparent 58%),
-    radial-gradient(2px 2px at 68% 20%, rgba(255,255,255,.68) 0%, transparent 58%),
-    radial-gradient(2px 2px at 84% 13%, rgba(255,245,190,.7) 0%, transparent 58%),
-    radial-gradient(2px 2px at 94% 36%, rgba(255,255,255,.66) 0%, transparent 58%),
-    radial-gradient(2px 2px at 13% 68%, rgba(255,235,165,.54) 0%, transparent 58%),
-    radial-gradient(2px 2px at 38% 76%, rgba(255,255,255,.58) 0%, transparent 58%),
-    radial-gradient(2px 2px at 71% 70%, rgba(255,236,170,.56) 0%, transparent 58%),
-    linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,244,214,.42));
+    radial-gradient(2px 2px at  8% 12%, rgba(255,214,102,.42) 0%, transparent 58%),
+    radial-gradient(2px 2px at 23% 32%, rgba(255,244,188,.32) 0%, transparent 58%),
+    radial-gradient(2px 2px at 50% 15%, rgba(255,187,67,.38) 0%, transparent 58%),
+    radial-gradient(2px 2px at 74% 22%, rgba(255,238,160,.3) 0%, transparent 58%),
+    radial-gradient(2px 2px at 91% 38%, rgba(255,214,102,.36) 0%, transparent 58%),
+    radial-gradient(1px 1px at 14% 72%, rgba(255,230,160,.28) 0%, transparent 58%),
+    radial-gradient(1px 1px at 84% 76%, rgba(255,230,160,.24) 0%, transparent 58%),
+    radial-gradient(ellipse 38% 24% at 50% 22%, rgba(236,132,42,.24) 0%, transparent 72%);
 }
 
 .stars::after {
@@ -77,9 +75,9 @@ body {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(0deg, rgba(61,43,59,.2) 0 18%, transparent 18%),
-    radial-gradient(ellipse 86% 24% at 50% 95%, rgba(68,50,70,.28) 0%, transparent 64%),
-    radial-gradient(ellipse 48% 18% at 50% 62%, rgba(119,83,111,.12) 0%, transparent 70%);
+    radial-gradient(ellipse 82% 18% at 50% 19%, rgba(255,168,56,.22) 0%, transparent 70%),
+    radial-gradient(ellipse 96% 38% at 50% 100%, rgba(0,0,0,.35) 0%, transparent 74%),
+    linear-gradient(90deg, rgba(0,0,0,.44), transparent 18%, transparent 82%, rgba(0,0,0,.44));
   animation: nebulaPulse 12s ease-in-out infinite alternate;
 }
 
@@ -100,7 +98,167 @@ body {
 
 .bg-deco {
   position: absolute;
-  opacity: 1;
+  opacity: 0;
+}
+
+/* ── House Banner Backdrop ─────────────────────────────────── */
+.house-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.house-banner {
+  position: absolute;
+  top: 0;
+  width: clamp(86px, 8vw, 138px);
+  height: clamp(310px, 50vw, 560px);
+  border: 4px solid rgba(199,151,51,.9);
+  border-top-width: 0;
+  box-shadow: 0 10px 28px rgba(0,0,0,.5), inset 0 0 0 3px rgba(0,0,0,.25);
+  clip-path: polygon(0 0, 100% 0, 100% 82%, 50% 100%, 0 82%);
+  opacity: .92;
+}
+
+.house-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.18), transparent 20%, transparent 80%, rgba(0,0,0,.24)),
+    radial-gradient(ellipse 70% 42% at 50% 38%, rgba(255,255,255,.18) 0%, transparent 70%);
+}
+
+.banner-top-pattern {
+  position: absolute;
+  top: 14px;
+  left: 10px;
+  right: 10px;
+  height: 42px;
+  opacity: .72;
+  background:
+    radial-gradient(circle, rgba(0,0,0,.45) 0 2px, transparent 2px) 0 0 / 18px 18px,
+    linear-gradient(45deg, rgba(255,236,170,.72) 0 22%, transparent 22% 50%, rgba(255,236,170,.72) 50% 72%, transparent 72%) 0 0 / 24px 24px;
+}
+
+.banner-animal {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: Georgia, serif;
+  font-size: clamp(58px, 7vw, 124px);
+  line-height: 1;
+  color: rgba(244,232,193,.92);
+  text-shadow: 0 5px 12px rgba(0,0,0,.55), 0 0 24px rgba(255,211,92,.28);
+}
+
+.banner-ribbon {
+  position: absolute;
+  left: 50%;
+  bottom: 18%;
+  transform: translateX(-50%) rotate(-11deg);
+  min-width: 130%;
+  padding: 8px 10px;
+  background: linear-gradient(90deg, #d8b064, #f1d494, #c49542);
+  border: 1px solid rgba(88,46,18,.45);
+  border-radius: 50% 42% 46% 48%;
+  color: #2c1810;
+  font-family: 'Cinzel', serif;
+  font-size: clamp(12px, 1.2vw, 18px);
+  font-weight: 700;
+  text-align: center;
+  box-shadow: 0 6px 12px rgba(0,0,0,.28);
+}
+
+.banner-gryf {
+  left: 3.6%;
+  background:
+    linear-gradient(90deg, #7a0004, #c51419 48%, #7a0004),
+    repeating-linear-gradient(45deg, rgba(250,226,154,.8) 0 12px, transparent 12px 24px);
+}
+
+.banner-huff {
+  left: 16.5%;
+  background:
+    repeating-linear-gradient(45deg, rgba(18,18,16,.85) 0 12px, transparent 12px 24px),
+    linear-gradient(90deg, #d6a900, #f0cf43 48%, #b58200);
+}
+
+.banner-raven {
+  right: 16.5%;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.2) 0 12%, transparent 12% 26%, rgba(255,255,255,.18) 26% 38%, transparent 38%),
+    linear-gradient(90deg, #0e2c67, #235da9 48%, #0b244f);
+}
+
+.banner-slyth {
+  right: 3.6%;
+  background:
+    repeating-linear-gradient(45deg, rgba(240,214,128,.82) 0 7px, transparent 7px 15px),
+    linear-gradient(90deg, #00601f, #14953d 48%, #004f1c);
+}
+
+.center-crest {
+  position: absolute;
+  top: clamp(32px, 4vw, 70px);
+  left: 50%;
+  width: clamp(190px, 23vw, 360px);
+  aspect-ratio: 1;
+  transform: translateX(-50%);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  overflow: hidden;
+  border: 5px solid rgba(207,142,39,.9);
+  border-radius: 34% 34% 44% 44%;
+  clip-path: polygon(50% 0, 93% 15%, 88% 72%, 50% 100%, 12% 72%, 7% 15%);
+  box-shadow: 0 0 42px rgba(255,126,22,.48), 0 16px 38px rgba(0,0,0,.58);
+  opacity: .9;
+}
+
+.center-crest::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: radial-gradient(circle at 50% 48%, transparent 0 35%, rgba(0,0,0,.18) 64%, rgba(0,0,0,.36) 100%);
+}
+
+.crest-quarter {
+  display: grid;
+  place-items: center;
+  font-family: Georgia, serif;
+  font-size: clamp(42px, 5vw, 82px);
+  color: rgba(244,232,193,.92);
+  text-shadow: 0 4px 12px rgba(0,0,0,.55);
+}
+
+.crest-gryf { background: linear-gradient(135deg, #9d0b0f, #d68d24); }
+.crest-slyth { background: linear-gradient(135deg, #12602b, #0c2716); }
+.crest-huff { background: linear-gradient(135deg, #d1a720, #211c18); }
+.crest-raven { background: linear-gradient(135deg, #0d3474, #7b5426); }
+
+.crest-letter {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 30%;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  border: 3px solid rgba(78,38,9,.6);
+  background: linear-gradient(135deg, #f2cf70, #b0701f);
+  color: #6b2d08;
+  font-family: 'Cinzel', serif;
+  font-size: clamp(42px, 5vw, 88px);
+  font-weight: 700;
+  text-shadow: 0 1px 0 rgba(255,255,255,.5);
+  box-shadow: 0 5px 16px rgba(0,0,0,.42);
 }
 
 /* Замок — по центру внизу, на всю ширину */
@@ -208,6 +366,23 @@ body {
   .deco-hallows { display: none; }
   .deco-train   { display: none; }
   .deco-wand    { top: 2%; }
+
+  .house-banner {
+    opacity: .34;
+    width: 72px;
+    height: 270px;
+  }
+
+  .banner-gryf { left: -14px; }
+  .banner-huff { left: 58px; }
+  .banner-raven { right: 58px; }
+  .banner-slyth { right: -14px; }
+  .banner-ribbon { display: none; }
+  .center-crest {
+    top: 34px;
+    width: 168px;
+    opacity: .34;
+  }
 }
 
 /* ── Layout ────────────────────────────────────────────────── */
@@ -229,16 +404,16 @@ body {
 .header-crest {
   font-size: 52px;
   margin-bottom: 8px;
-  filter: drop-shadow(0 4px 18px rgba(88,58,26,.35));
+  filter: drop-shadow(0 0 22px rgba(201,168,76,.7));
 }
 
 .header-title {
   font-family: 'Cinzel', serif;
   font-size: clamp(24px, 5vw, 44px);
   font-weight: 700;
-  color: #6f461c;
+  color: var(--gold-accent);
   letter-spacing: .08em;
-  text-shadow: 0 2px 18px rgba(255,248,218,.75), 1px 1px 0 rgba(255,255,255,.55);
+  text-shadow: 0 0 34px rgba(201,168,76,.45), 2px 2px 0 rgba(0,0,0,.8);
   line-height: 1.2;
   margin-bottom: 8px;
 }
@@ -247,7 +422,7 @@ body {
   font-family: 'Crimson Text', serif;
   font-style: italic;
   font-size: 18px;
-  color: rgba(82,55,34,.76);
+  color: rgba(244,232,193,.74);
   letter-spacing: .05em;
 }
 
@@ -257,7 +432,7 @@ body {
   max-width: 500px;
   margin: 20px auto;
   height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(111,70,28,.7), transparent);
+  background: linear-gradient(90deg, transparent, var(--gold-accent), transparent);
   position: relative;
 }
 
@@ -266,11 +441,11 @@ body {
   position: absolute;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
-  background: rgba(232,214,169,.94);
+  background: #351003;
   padding: 0 12px;
   font-size: 16px;
   line-height: 1;
-  color: #6f461c;
+  color: var(--gold-accent);
 }
 
 /* ── Week Tabs ─────────────────────────────────────────────── */
