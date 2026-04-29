@@ -6,7 +6,7 @@
   <title>Конкурс Факультетов</title>
 
   <!-- Styles -->
-  <link rel="stylesheet" href="css/styles.css?v=ratings-1">
+  <link rel="stylesheet" href="css/styles.css?v=design-2">
 
   <!--
     Когда будет готов FastAPI бэкенд:
@@ -214,7 +214,9 @@
           <div class="section-kicker">Индивидуальный зачёт</div>
           <h2 class="section-title">Общий рейтинг операторов</h2>
         </div>
-        <p class="section-help">Место определяется по сумме баллов за выбранную неделю или за весь месяц. Чем больше баллов, тем выше позиция.</p>
+        <div class="section-help">
+          <strong>Как читать таблицу:</strong> место считается по баллам за выбранную неделю или месяц. Сначала смотри позицию, затем факультет и итоговые баллы.
+        </div>
       </div>
       <div class="ranking-table-head" aria-hidden="true">
         <span>Место</span>
@@ -228,6 +230,13 @@
     </section>
 
     <!-- Карточки факультетов -->
+    <section class="details-intro" aria-label="Подробные таблицы команд">
+      <div>
+        <div class="section-kicker">Командные таблицы</div>
+        <h2 class="section-title">Баллы операторов по факультетам</h2>
+      </div>
+      <p class="section-help">Сверху идут первые две команды, ниже третья и четвёртая. Внутри каждой таблицы операторы отсортированы по баллам.</p>
+    </section>
     <section class="faculties-grid" id="faculty-grid" aria-label="Факультеты">
       <!-- заполняется из app.js → renderFacultyCards() -->
     </section>
@@ -235,7 +244,7 @@
   </div>
 
   <!-- App (подключить последним) -->
-  <script src="js/app.js?v=ratings-1"></script>
+  <script src="js/app.js?v=design-2"></script>
 
 </body>
 </html>

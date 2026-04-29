@@ -339,7 +339,7 @@ async function renderScoreboard(weekIdx) {
   const leaderDiff = second ? first.total - second.total : 0;
   const scoreItems = totals.map((fac, idx) => `
     <div class="score-faculty score-faculty-card">
-      <div class="score-rank">Место ${idx + 1}</div>
+      <div class="score-rank">#${idx + 1}</div>
       <div class="score-faculty-name">
         ${renderCrest(fac, 'score-crest-img')}
         <span>${fac.name}</span>
@@ -358,7 +358,7 @@ async function renderScoreboard(weekIdx) {
       <div class="score-summary">
         <span>${getPeriodLabel(weekIdx)}</span>
         <strong>Лидер: ${first.name}</strong>
-        <span>Отрыв: +${fmtPts(leaderDiff)} баллов</span>
+        <span>Отрыв от 2 места: +${fmtPts(leaderDiff)}</span>
       </div>
     </div>
     <div class="score-list">${scoreItems}</div>
