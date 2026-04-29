@@ -563,8 +563,9 @@ body {
 
 .editor-table {
   width: 100%;
-  min-width: 820px;
+  min-width: 980px;
   border-collapse: collapse;
+  table-layout: auto;
 }
 
 .editor-table th,
@@ -572,6 +573,7 @@ body {
   padding: 8px;
   border-bottom: 1px solid rgba(244,232,193,.08);
   text-align: center;
+  white-space: nowrap;
 }
 
 .editor-table th {
@@ -586,6 +588,12 @@ body {
 .editor-table td:first-child {
   text-align: left;
   min-width: 220px;
+  white-space: normal;
+}
+
+.editor-table th.metric-score,
+.editor-table td:has(.metric-value-input) {
+  min-width: 96px;
 }
 
 .metric-value-input {
@@ -706,7 +714,7 @@ body {
 /* ── Faculty Grid ──────────────────────────────────────────── */
 .faculties-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(520px, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: 24px;
   margin-bottom: 32px;
 }
@@ -717,6 +725,7 @@ body {
 
 /* ── Faculty Card ──────────────────────────────────────────── */
 .faculty-card {
+  min-width: 0;
   border-radius: 8px;
   overflow: hidden;
   border: 1px solid rgba(255,255,255,.08);
@@ -772,13 +781,18 @@ body {
 .faculty-table-wrap {
   background: rgba(244,232,193,.96);
   padding: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
 table.operators {
   width: 100%;
+  min-width: 940px;
   border-collapse: collapse;
   font-size: 13px;
   color: var(--ink);
+  table-layout: auto;
 }
 
 table.operators thead tr {
@@ -794,11 +808,18 @@ table.operators th {
   padding: 9px 10px;
   text-align: center;
   color: rgba(44,24,16,.55);
+  white-space: nowrap;
 }
 
 table.operators th:first-child {
   text-align: left;
   padding-left: 16px;
+  min-width: 220px;
+}
+
+table.operators th.metric-score,
+table.operators td.metric-score-cell {
+  min-width: 190px;
 }
 
 table.operators td {
@@ -807,6 +828,8 @@ table.operators td {
   border-bottom: 1px solid rgba(44,24,16,.07);
   color: var(--ink);
   font-size: 14px;
+  min-width: 74px;
+  white-space: nowrap;
 }
 
 table.operators td:first-child {
@@ -814,6 +837,8 @@ table.operators td:first-child {
   padding-left: 16px;
   font-weight: 600;
   font-size: 13.5px;
+  min-width: 220px;
+  white-space: normal;
 }
 
 table.operators tr:last-child td { border-bottom: none; }
@@ -846,12 +871,14 @@ table.operators tbody tr:hover {
   display: flex;
   align-items: center;
   gap: 6px;
+  min-width: 150px;
 }
 
 .score-bar {
   height: 6px;
   border-radius: 3px;
-  flex: 1;
+  flex: 1 1 90px;
+  min-width: 70px;
   background: rgba(44,24,16,.1);
   overflow: hidden;
 }
@@ -909,7 +936,7 @@ table.operators tbody tr:hover {
 
 .ranking-row {
   display: grid;
-  grid-template-columns: 40px 1fr 80px 60px;
+  grid-template-columns: 40px minmax(0, 1fr) minmax(100px, auto) 70px;
   align-items: center;
   gap: 12px;
   padding: 10px 14px;
@@ -932,6 +959,8 @@ table.operators tbody tr:hover {
   font-size: 15px;
   font-weight: 600;
   color: var(--parchment);
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .ranking-faculty-tag {
@@ -941,6 +970,7 @@ table.operators tbody tr:hover {
   padding: 3px 8px;
   border-radius: 3px;
   text-align: center;
+  white-space: nowrap;
 }
 
 .ranking-pts {
@@ -948,6 +978,17 @@ table.operators tbody tr:hover {
   font-size: 16px;
   font-weight: 700;
   text-align: right;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .ranking-row {
+    grid-template-columns: 32px minmax(0, 1fr) 64px;
+  }
+
+  .ranking-faculty-tag {
+    display: none;
+  }
 }
 
 /* ── Faculty Theme Colors ──────────────────────────────────── */
