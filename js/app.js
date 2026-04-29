@@ -20,6 +20,13 @@ const USE_MOCK = true;
 /* ── API Base URL (используется когда USE_MOCK = false) ──── */
 const API_BASE = 'http://localhost:8000/api/v1';
 
+const HOUSE_CRESTS = {
+  gryf: 'assets/crest-gryffindor.png',
+  slyth: 'assets/crest-slytherin.png',
+  huff: 'assets/crest-hufflepuff.png',
+  raven: 'assets/crest-ravenclaw.png',
+};
+
 /* ============================================================
    MOCK DATA
    Замените реальными вызовами через api.js когда будет готов бэкенд.
@@ -30,6 +37,7 @@ const API_BASE = 'http://localhost:8000/api/v1';
 let FACULTIES = [
   {
     id: 'gryf', cls: 'gryf', icon: '🦁',
+    crest: HOUSE_CRESTS.gryf,
     name: 'Гриффиндор',
     tagCls: 'tag-gryf', scoreCls: 'gryf-score',
     operators: [
@@ -44,6 +52,7 @@ let FACULTIES = [
   },
   {
     id: 'slyth', cls: 'slyth', icon: '🐍',
+    crest: HOUSE_CRESTS.slyth,
     name: 'Слизерин',
     tagCls: 'tag-slyth', scoreCls: 'slyth-score',
     operators: [
@@ -58,6 +67,7 @@ let FACULTIES = [
   },
   {
     id: 'huff', cls: 'huff', icon: '🦡',
+    crest: HOUSE_CRESTS.huff,
     name: 'Пуффендуй',
     tagCls: 'tag-huff', scoreCls: 'huff-score',
     operators: [
@@ -67,6 +77,7 @@ let FACULTIES = [
   },
   {
     id: 'raven', cls: 'raven', icon: '🦅',
+    crest: HOUSE_CRESTS.raven,
     name: 'Когтевран',
     tagCls: 'tag-raven', scoreCls: 'raven-score',
     operators: [
@@ -129,6 +140,10 @@ function getScoreMetricIndex() {
 
 function normalizeEditableData() {
   const metricCount = METRICS.length;
+
+  FACULTIES.forEach(fac => {
+    fac.crest = HOUSE_CRESTS[fac.id] || fac.crest;
+  });
 
   WEEKLY_DATA.forEach((week, wi) => {
     if (!week) WEEKLY_DATA[wi] = [];
@@ -305,6 +320,11 @@ function buildRankBadge(globalRank) {
   return `<span class="rank-badge ${cls}">${globalRank}</span>`;
 }
 
+function renderCrest(fac, className = 'faculty-crest-img') {
+  if (!fac.crest) return fac.icon;
+  return `<img class="${className}" src="${fac.crest}" alt="${escapeHtml(fac.name)}">`;
+}
+
 /* ── Scoreboard ─────────────────────────────────────────────── */
 async function renderScoreboard(weekIdx) {
   const totals = await Promise.all(
@@ -316,7 +336,10 @@ async function renderScoreboard(weekIdx) {
   const scoreItems = totals.map((fac, idx) => `
     <div class="score-faculty score-faculty-card">
       <div class="score-rank">#${idx + 1}</div>
-      <div class="score-faculty-name">${fac.icon} ${fac.name}</div>
+      <div class="score-faculty-name">
+        ${renderCrest(fac, 'score-crest-img')}
+        <span>${fac.name}</span>
+      </div>
       <div class="score-points ${fac.scoreCls}">${fmtPts(fac.total)}</div>
     </div>
   `).join('');
@@ -399,7 +422,7 @@ async function renderFacultyCards(weekIdx) {
       <div class="faculty-card ${fac.cls}">
         <div class="faculty-header">
           <div class="faculty-header-left">
-            <div class="faculty-crest">${fac.icon}</div>
+            <div class="faculty-crest">${renderCrest(fac)}</div>
             <div class="faculty-name">${fac.name}</div>
           </div>
           <div>
@@ -448,7 +471,7 @@ async function renderRanking(weekIdx) {
       <div class="ranking-row">
         <div class="ranking-pos" style="color:${color}">${pos}</div>
         <div class="ranking-name">${escapeHtml(op.name)}</div>
-        <div class="ranking-faculty-tag ${op.fac.tagCls}">${op.fac.icon} ${escapeHtml(op.fac.name)}</div>
+        <div class="ranking-faculty-tag ${op.fac.tagCls}">${renderCrest(op.fac, 'ranking-crest-img')} ${escapeHtml(op.fac.name)}</div>
         <div class="ranking-pts ${op.fac.scoreCls}">${fmtPts(op.pts)}</div>
       </div>`;
   }).join('');
@@ -530,7 +553,7 @@ function renderEditor() {
     return `
       <div class="editor-faculty ${fac.cls}">
         <div class="editor-faculty-header">
-          <div class="editor-faculty-name">${fac.icon} ${escapeHtml(fac.name)}</div>
+          <div class="editor-faculty-name">${escapeHtml(fac.name)}</div>
           <div class="editor-add-operator">
             <input class="editor-input" id="new-operator-${fi}" placeholder="Новый оператор">
             <button class="editor-btn" onclick="addOperator(${fi})">Добавить</button>

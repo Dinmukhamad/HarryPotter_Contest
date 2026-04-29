@@ -117,6 +117,41 @@ body {
   -webkit-user-drag: none;
 }
 
+.house-flag {
+  position: absolute;
+  top: clamp(10px, 1.8vw, 30px);
+  width: clamp(92px, 10vw, 156px);
+  height: min(72vh, clamp(360px, 56vw, 650px));
+  object-fit: contain;
+  object-position: top center;
+  user-select: none;
+  -webkit-user-drag: none;
+  opacity: .72;
+  filter: drop-shadow(0 20px 22px rgba(0,0,0,.62)) saturate(.98);
+}
+
+.house-flag-gryf {
+  left: max(10px, calc(50% - 520px));
+  transform: rotate(-2.5deg);
+}
+
+.house-flag-huff {
+  left: max(104px, calc(50% - 390px));
+  transform: translateY(34px) rotate(2deg);
+  opacity: .58;
+}
+
+.house-flag-raven {
+  right: max(104px, calc(50% - 390px));
+  transform: translateY(34px) rotate(-2deg);
+  opacity: .58;
+}
+
+.house-flag-slyth {
+  right: max(10px, calc(50% - 520px));
+  transform: rotate(2.5deg);
+}
+
 .backdrop-crest {
   top: clamp(16px, 2.8vw, 44px);
   left: 50%;
@@ -126,6 +161,7 @@ body {
   transform: translateX(-50%);
   opacity: .88;
   filter: drop-shadow(0 0 34px rgba(230,111,24,.68)) drop-shadow(0 18px 28px rgba(0,0,0,.64));
+  z-index: 1;
 }
 
 .house-banner {
@@ -390,6 +426,18 @@ body {
     width: 72px;
     height: 270px;
   }
+
+  .house-flag {
+    top: 12px;
+    width: 76px;
+    height: 300px;
+    opacity: .24;
+  }
+
+  .house-flag-gryf { left: -30px; }
+  .house-flag-huff { left: 34px; transform: translateY(28px) rotate(2deg); }
+  .house-flag-raven { right: 34px; transform: translateY(28px) rotate(-2deg); }
+  .house-flag-slyth { right: -30px; }
 
   .banner-gryf { left: -14px; }
   .banner-huff { left: 58px; }
@@ -801,6 +849,10 @@ body {
 }
 
 .score-faculty-name {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
   font-family: 'Cinzel', serif;
   font-size: 13px;
   font-weight: 600;
@@ -809,6 +861,14 @@ body {
   text-transform: uppercase;
   color: rgba(201,168,76,.6);
   overflow-wrap: anywhere;
+}
+
+.score-crest-img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  flex: 0 0 auto;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,.45));
 }
 
 .score-points {
@@ -885,14 +945,21 @@ body {
 }
 
 .faculty-crest {
-  width: 44px;
-  height: 44px;
+  width: 58px;
+  height: 58px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
   border: 2px solid rgba(255,255,255,.2);
+  overflow: hidden;
+}
+
+.faculty-crest-img {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,.45));
 }
 
 .faculty-name {
@@ -1104,6 +1171,10 @@ table.operators tbody tr:hover {
 }
 
 .ranking-faculty-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
   font-family: 'Cinzel', serif;
   font-size: 10px;
   letter-spacing: .06em;
@@ -1111,6 +1182,13 @@ table.operators tbody tr:hover {
   border-radius: 3px;
   text-align: center;
   white-space: nowrap;
+}
+
+.ranking-crest-img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  flex: 0 0 auto;
 }
 
 .ranking-pts {
