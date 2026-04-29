@@ -154,6 +154,121 @@ body {
   100% { opacity: .7; }
 }
 
+/* ── Decorative SVG elements ───────────────────────────────── */
+.bg-decorations {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.bg-deco {
+  position: absolute;
+  opacity: 1;
+}
+
+/* Замок — по центру внизу, на всю ширину */
+.deco-castle {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(100%, 900px);
+  height: auto;
+  opacity: .85;
+  filter: blur(0.3px);
+}
+
+/* Сова — верхний левый угол */
+.deco-owl {
+  top: 6%;
+  left: 2%;
+  width: clamp(80px, 10vw, 140px);
+  animation: owlFloat 8s ease-in-out infinite;
+}
+
+@keyframes owlFloat {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-12px); }
+}
+
+/* Снитч — верхний правый, летает */
+.deco-snitch {
+  top: 8%;
+  right: 3%;
+  width: clamp(70px, 9vw, 120px);
+  animation: snitchFly 6s ease-in-out infinite;
+}
+
+@keyframes snitchFly {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  25%  { transform: translate(-20px, 10px) rotate(5deg); }
+  50%  { transform: translate(-10px, -8px) rotate(-3deg); }
+  75%  { transform: translate(15px, 5px) rotate(4deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+/* Дары смерти — левая сторона, середина */
+.deco-hallows {
+  top: 38%;
+  left: 1%;
+  width: clamp(60px, 7vw, 100px);
+  animation: hallowsPulse 10s ease-in-out infinite;
+}
+
+@keyframes hallowsPulse {
+  0%, 100% { opacity: .7; transform: scale(1); }
+  50%       { opacity: 1;  transform: scale(1.05); }
+}
+
+/* Хогвартс-экспресс — правая сторона */
+.deco-train {
+  bottom: 18%;
+  right: 0;
+  width: clamp(140px, 18vw, 260px);
+  animation: trainMove 16s linear infinite;
+}
+
+@keyframes trainMove {
+  0%   { transform: translateX(20px); }
+  50%  { transform: translateX(-10px); }
+  100% { transform: translateX(20px); }
+}
+
+/* Дементор — правый нижний угол */
+.deco-dementor {
+  bottom: 22%;
+  right: 1.5%;
+  width: clamp(55px, 7vw, 90px);
+  animation: dementorFloat 12s ease-in-out infinite;
+}
+
+@keyframes dementorFloat {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50%       { transform: translateY(-18px) rotate(2deg); }
+}
+
+/* Палочка — верхняя часть, по центру-левее */
+.deco-wand {
+  top: 14%;
+  left: 50%;
+  transform: translateX(-60%) rotate(-15deg);
+  width: clamp(120px, 16vw, 220px);
+  animation: wandGlow 4s ease-in-out infinite;
+}
+
+@keyframes wandGlow {
+  0%, 100% { opacity: .7; }
+  50%       { opacity: 1; }
+}
+
+/* Скрываем часть декораций на маленьких экранах */
+@media (max-width: 600px) {
+  .deco-hallows { display: none; }
+  .deco-train   { display: none; }
+  .deco-wand    { top: 2%; }
+}
+
 /* ── Layout ────────────────────────────────────────────────── */
 .container {
   position: relative;
