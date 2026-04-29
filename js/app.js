@@ -447,7 +447,7 @@ async function renderFacultyCards(weekIdx) {
             <tbody>
               ${rows}
               <tr class="total-row">
-                <td colspan="${colspan}" style="text-align:right;padding-right:12px;color:rgba(44,24,16,.6);font-size:11px">ИТОГО</td>
+                <td colspan="${colspan}" style="text-align:right;padding-right:12px;color:rgba(244,232,193,.62);font-size:11px">ИТОГО</td>
                 <td>
                   <div class="score-bar-wrap">
                     <span class="pts-value">${fmtPts(facTotal)}</span>
@@ -724,17 +724,50 @@ function removeMetric(metricIdx) {
    NAVIGATION
    ============================================================ */
 let currentWeek = 4;
+let currentView = 'rating';
+
+function setActiveTab(view, weekIdx = null) {
+  document.querySelectorAll('.week-tab').forEach(tab => {
+    const isRating = view === 'rating' && tab.dataset.view === 'rating';
+    const isWeek = view === 'week' && tab.dataset.week === String(weekIdx);
+    tab.classList.toggle('active', isRating || isWeek);
+  });
+}
+
+function setDashboardMode(view) {
+  currentView = view;
+  const ratingOnly = view === 'rating';
+  const sections = [
+    ['editor-panel', !ratingOnly],
+    ['scoreboard', !ratingOnly],
+    ['ranking-list', true],
+    ['faculty-grid', !ratingOnly],
+  ];
+
+  sections.forEach(([id, visible]) => {
+    const el = document.getElementById(id);
+    if (el) el.hidden = !visible;
+  });
+
+  document.querySelectorAll('.details-intro, .operator-ranking-section').forEach(el => {
+    el.hidden = ratingOnly ? !el.classList.contains('operator-ranking-section') : el.classList.contains('operator-ranking-section');
+  });
+}
+
+async function showRating() {
+  setDashboardMode('rating');
+  setActiveTab('rating');
+  await renderRanking(4);
+}
 
 async function showWeek(idx) {
   currentWeek = idx;
-  document.querySelectorAll('.week-tab').forEach((t, i) => {
-    t.classList.toggle('active', i === idx);
-  });
+  setDashboardMode('week');
+  setActiveTab('week', idx);
 
   await Promise.all([
     renderScoreboard(idx),
     renderFacultyCards(idx),
-    renderRanking(idx),
   ]);
   renderEditor();
 }
@@ -743,7 +776,10 @@ async function showWeek(idx) {
 document.addEventListener('DOMContentLoaded', () => {
   loadEditableData();
   loadAdminSession();
-  showWeek(4);
+  renderEditor();
+  renderScoreboard(4);
+  renderFacultyCards(4);
+  showRating();
 });
 
 
