@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Конкурс Факультетов</title>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+
+  <!--
+    Когда будет готов FastAPI бэкенд:
+    1. Создайте js/api.js по шаблону в конце app.js
+    2. Раскомментируйте строку ниже
+    3. Установите USE_MOCK = false в app.js
+  -->
+  <!-- <script src="js/api.js" defer></script> -->
+</head>
+<body>
+
+  <!-- Звёздный фон -->
+  <div class="stars" aria-hidden="true"></div>
+
+  <div class="container">
+
+    <!-- Шапка -->
+    <header class="header">
+      <div class="header-crest">🏆</div>
+      <h1 class="header-title">Конкурс Факультетов</h1>
+      <p class="header-subtitle">Таблица результатов · Контакт-центр</p>
+      <div class="divider" aria-hidden="true"></div>
+    </header>
+
+    <!-- Вкладки недель -->
+    <nav class="week-tabs" aria-label="Выбор недели">
+      <button class="week-tab" onclick="showWeek(0)">Неделя 1</button>
+      <button class="week-tab" onclick="showWeek(1)">Неделя 2</button>
+      <button class="week-tab" onclick="showWeek(2)">Неделя 3</button>
+      <button class="week-tab" onclick="showWeek(3)">Неделя 4</button>
+      <button class="week-tab active" onclick="showWeek(4)">Итоги месяца</button>
+    </nav>
+
+    <!-- Счёт факультетов -->
+    <section class="scoreboard" id="scoreboard" aria-label="Счёт факультетов">
+      <!-- заполняется из app.js → renderScoreboard() -->
+    </section>
+
+    <!-- Карточки факультетов -->
+    <section class="faculties-grid" id="faculty-grid" aria-label="Факультеты">
+      <!-- заполняется из app.js → renderFacultyCards() -->
+    </section>
+
+    <!-- Общий рейтинг -->
+    <section class="ranking-section" id="ranking-section" aria-label="Общий рейтинг">
+      <div class="ranking-header">⚡ Общий рейтинг операторов</div>
+      <div class="ranking-list" id="ranking-list">
+        <!-- заполняется из app.js → renderRanking() -->
+      </div>
+    </section>
+
+  </div>
+
+  <!-- App (подключить последним) -->
+  <script src="js/app.js"></script>
+
+</body>
+</html>
