@@ -122,31 +122,31 @@ body {
   top: 0;
   width: clamp(112px, 9vw, 176px);
   height: clamp(360px, 44vw, 570px);
-  background-image: url('../assets/house-banners.png');
+  background-position: center top;
   background-repeat: no-repeat;
-  background-size: auto 100%;
+  background-size: contain;
   opacity: .96;
   filter: drop-shadow(0 16px 22px rgba(0,0,0,.62)) saturate(1.12) contrast(1.05);
 }
 
 .photo-gryf {
   left: 3.8%;
-  background-position: 26.5% 50%;
+  background-image: url('../assets/flag-gryf.png');
 }
 
 .photo-huff {
   left: 17.2%;
-  background-position: 74% 50%;
+  background-image: url('../assets/flag-huff.png');
 }
 
 .photo-raven {
   right: 16.8%;
-  background-position: 5% 50%;
+  background-image: url('../assets/flag-raven.png');
 }
 
 .photo-slyth {
   right: 3.8%;
-  background-position: 95% 50%;
+  background-image: url('../assets/flag-slyth.png');
 }
 
 .backdrop-crest {
