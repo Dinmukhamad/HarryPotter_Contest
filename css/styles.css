@@ -131,22 +131,22 @@ body {
 
 .photo-gryf {
   left: 3.8%;
-  background-image: url('../assets/flag-gryf.png');
+  background-image: url('../assets/flag-gryf.png?v=flags-2');
 }
 
 .photo-huff {
   left: 17.2%;
-  background-image: url('../assets/flag-huff.png');
+  background-image: url('../assets/flag-huff.png?v=flags-2');
 }
 
 .photo-raven {
   right: 16.8%;
-  background-image: url('../assets/flag-raven.png');
+  background-image: url('../assets/flag-raven.png?v=flags-2');
 }
 
 .photo-slyth {
   right: 3.8%;
-  background-image: url('../assets/flag-slyth.png');
+  background-image: url('../assets/flag-slyth.png?v=flags-2');
 }
 
 .backdrop-crest {
