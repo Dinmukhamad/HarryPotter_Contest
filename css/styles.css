@@ -369,15 +369,22 @@ body {
 
 /* ── Scoreboard Banner ─────────────────────────────────────── */
 .scoreboard {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  gap: 16px;
   background: rgba(201,168,76,.07);
   border: 1px solid rgba(201,168,76,.25);
   border-radius: 8px;
   padding: 20px 24px;
   margin-bottom: 32px;
+}
+
+.scoreboard-header {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.score-list {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
 }
 
 .score-faculty {
@@ -388,13 +395,31 @@ body {
 
 .score-faculty.right { text-align: right; }
 
+.score-faculty-card {
+  min-width: 0;
+  padding: 14px 12px;
+  text-align: center;
+  border: 1px solid rgba(201,168,76,.16);
+  border-radius: 6px;
+  background: rgba(6,4,15,.28);
+}
+
+.score-rank {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  line-height: 1;
+  color: rgba(201,168,76,.45);
+}
+
 .score-faculty-name {
   font-family: 'Cinzel', serif;
   font-size: 13px;
   font-weight: 600;
   letter-spacing: .1em;
+  line-height: 1.25;
   text-transform: uppercase;
   color: rgba(201,168,76,.6);
+  overflow-wrap: anywhere;
 }
 
 .score-points {
@@ -419,6 +444,22 @@ body {
   font-style: italic;
   font-size: 14px;
   color: var(--gold-accent);
+}
+
+@media (max-width: 900px) {
+  .score-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .scoreboard {
+    padding: 16px;
+  }
+
+  .score-list {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ── Faculty Grid ──────────────────────────────────────────── */
