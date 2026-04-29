@@ -340,7 +340,7 @@ async function renderFacultyCards(weekIdx) {
   const maxPts = Math.max(1, ...allTotals.flat().map(o => o.pts));
 
   const colHeaders = weekIdx < 4
-    ? METRICS.map(metric => `<th>${escapeHtml(metric.label)}</th>`).join('')
+    ? METRICS.map(metric => `<th class="metric-col metric-${metric.type}">${escapeHtml(metric.label)}</th>`).join('')
     : '<th>Баллы (итого)</th>';
 
   let html = '';
@@ -363,7 +363,7 @@ async function renderFacultyCards(weekIdx) {
           const value = row[i] ?? 0;
           if (metric.type === 'score') {
             return `
-              <td>
+              <td class="metric-score-cell">
                 <div class="score-bar-wrap">
                   <div class="score-bar">
                     <div class="score-bar-fill" style="width:${pct}%"></div>
@@ -541,7 +541,7 @@ function renderEditor() {
             <thead>
               <tr>
                 <th>Оператор</th>
-                ${METRICS.map(metric => `<th>${escapeHtml(metric.label)}</th>`).join('')}
+                ${METRICS.map(metric => `<th class="metric-col metric-${metric.type}">${escapeHtml(metric.label)}</th>`).join('')}
                 <th></th>
               </tr>
             </thead>
