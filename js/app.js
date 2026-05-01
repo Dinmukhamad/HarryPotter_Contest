@@ -48,6 +48,9 @@ let FACULTIES = [
       'Шынгысбаева Акерке',
       'Онгарова Жанерке',
       'Ортай Нурсултан',
+      'Оператор Г8',
+      'Оператор Г9',
+      'Оператор Г10',
     ]
   },
   {
@@ -63,6 +66,9 @@ let FACULTIES = [
       'Сергей Алихан',
       'Хамидов Санжар',
       'Шаяхмет Жаркынай',
+      'Оператор С8',
+      'Оператор С9',
+      'Оператор С10',
     ]
   },
   {
@@ -73,6 +79,7 @@ let FACULTIES = [
     operators: [
       'Оператор П1','Оператор П2','Оператор П3',
       'Оператор П4','Оператор П5','Оператор П6','Оператор П7',
+      'Оператор П8','Оператор П9','Оператор П10',
     ]
   },
   {
@@ -83,6 +90,7 @@ let FACULTIES = [
     operators: [
       'Оператор К1','Оператор К2','Оператор К3',
       'Оператор К4','Оператор К5','Оператор К6','Оператор К7',
+      'Оператор К8','Оператор К9','Оператор К10',
     ]
   },
 ];
@@ -123,6 +131,7 @@ const COLS = ['КЗЧ', 'QA', 'CSat', 'Эфф%', 'Часы%', 'Нар.', 'Опо
 const STORAGE_KEY = 'hpContestEditableData';
 const ADMIN_SESSION_KEY = 'hpContestAdminUnlocked';
 const ADMIN_PASSWORD = 'hogwarts2026';
+const MIN_OPERATORS_PER_FACULTY = 10;
 let isAdmin = false;
 let METRICS = COLS.map((label, idx) => ({
   label,
@@ -143,6 +152,9 @@ function normalizeEditableData() {
 
   FACULTIES.forEach(fac => {
     fac.crest = HOUSE_CRESTS[fac.id] || fac.crest;
+    while (fac.operators.length < MIN_OPERATORS_PER_FACULTY) {
+      fac.operators.push(`Оператор ${fac.name} ${fac.operators.length + 1}`);
+    }
   });
 
   WEEKLY_DATA.forEach((week, wi) => {
@@ -215,9 +227,41 @@ function loadAdminSession() {
   isAdmin = sessionStorage.getItem(ADMIN_SESSION_KEY) === 'true';
 }
 
+function updateAdminGate() {
+  const gateBtn = document.getElementById('admin-gate-btn');
+  const loginArea = document.getElementById('admin-login-area');
+  const activeArea = document.getElementById('admin-active-area');
+  const error = document.getElementById('admin-error');
+
+  if (gateBtn) {
+    gateBtn.classList.toggle('unlocked', isAdmin);
+    gateBtn.setAttribute('aria-label', isAdmin ? 'Режим администратора открыт' : 'Открыть режим администратора');
+  }
+  if (loginArea) loginArea.hidden = isAdmin;
+  if (activeArea) activeArea.hidden = !isAdmin;
+  if (error) error.textContent = '';
+}
+
+function openAdminModal() {
+  const popover = document.getElementById('admin-popover');
+  if (!popover) return;
+  updateAdminGate();
+  popover.hidden = false;
+
+  if (!isAdmin) {
+    const input = document.getElementById('admin-password');
+    if (input) setTimeout(() => input.focus(), 0);
+  }
+}
+
+function closeAdminModal() {
+  const popover = document.getElementById('admin-popover');
+  if (popover) popover.hidden = true;
+}
+
 function requireAdmin() {
   if (isAdmin) return true;
-  alert('Редактирование доступно только администратору.');
+  openAdminModal();
   renderEditor();
   return false;
 }
@@ -230,7 +274,10 @@ function loginAdmin() {
   if (password === ADMIN_PASSWORD) {
     isAdmin = true;
     sessionStorage.setItem(ADMIN_SESSION_KEY, 'true');
+    closeAdminModal();
+    updateAdminGate();
     renderEditor();
+    setDashboardMode(currentView);
     return;
   }
 
@@ -241,7 +288,10 @@ function loginAdmin() {
 function logoutAdmin() {
   isAdmin = false;
   sessionStorage.removeItem(ADMIN_SESSION_KEY);
+  closeAdminModal();
+  updateAdminGate();
   renderEditor();
+  setDashboardMode(currentView);
 }
 
 /* ============================================================
@@ -303,9 +353,12 @@ function getFacultyTotal(facIdx, weekIdx) {
   if (weekIdx < 4) {
     return WEEKLY_DATA[weekIdx][facIdx].reduce((s, r) => s + (Number(r[scoreIdx]) || 0), 0);
   }
-  return [0,1,2,3].reduce((sum, w) =>
+
+  const operatorCount = Math.max(1, FACULTIES[facIdx].operators.length);
+  const monthlyTotal = [0,1,2,3].reduce((sum, w) =>
     sum + WEEKLY_DATA[w][facIdx].reduce((s, r) => s + (Number(r[scoreIdx]) || 0), 0), 0
   );
+  return monthlyTotal / operatorCount;
 }
 
 /* ============================================================
@@ -337,6 +390,7 @@ async function renderScoreboard(weekIdx) {
   totals.sort((a, b) => b.total - a.total);
   const [first, second] = totals;
   const leaderDiff = second ? first.total - second.total : 0;
+  const isMonthTotal = weekIdx === 4;
   const scoreItems = totals.map((fac, idx) => `
     <div class="score-faculty score-faculty-card">
       <div class="score-rank">#${idx + 1}</div>
@@ -345,7 +399,7 @@ async function renderScoreboard(weekIdx) {
         <span>${fac.name}</span>
       </div>
       <div class="score-points ${fac.scoreCls}">${fmtPts(fac.total)}</div>
-      <div class="score-caption">баллов</div>
+      <div class="score-caption">${isMonthTotal ? 'средний балл' : 'баллов'}</div>
     </div>
   `).join('');
 
@@ -358,7 +412,7 @@ async function renderScoreboard(weekIdx) {
       <div class="score-summary">
         <span>${getPeriodLabel(weekIdx)}</span>
         <strong>Лидер: ${first.name}</strong>
-        <span>Отрыв от 2 места: +${fmtPts(leaderDiff)}</span>
+        <span>${isMonthTotal ? 'Средний отрыв' : 'Отрыв от 2 места'}: +${fmtPts(leaderDiff)}</span>
       </div>
     </div>
     <div class="score-list">${scoreItems}</div>
@@ -412,7 +466,7 @@ async function renderFacultyCards(weekIdx) {
 
       return `
         <tr>
-          <td>${buildRankBadge(globalRank)}${escapeHtml(op.name)}</td>
+          <td class="${op.name.length <= 12 ? 'short-text' : ''}">${buildRankBadge(globalRank)}${escapeHtml(op.name)}</td>
           ${metricCells}
           ${weekIdx < 4 ? '' : `<td>
             <div class="score-bar-wrap">
@@ -436,7 +490,7 @@ async function renderFacultyCards(weekIdx) {
           </div>
           <div>
             <div class="faculty-total">${fmtPts(facTotal)}</div>
-            <div class="faculty-total-label">очков</div>
+            <div class="faculty-total-label">${weekIdx === 4 ? 'средний балл' : 'очков'}</div>
           </div>
         </div>
         <div class="faculty-table-wrap">
@@ -446,14 +500,6 @@ async function renderFacultyCards(weekIdx) {
             </thead>
             <tbody>
               ${rows}
-              <tr class="total-row">
-                <td colspan="${colspan}" style="text-align:right;padding-right:12px;color:rgba(244,232,193,.62);font-size:11px">ИТОГО</td>
-                <td>
-                  <div class="score-bar-wrap">
-                    <span class="pts-value">${fmtPts(facTotal)}</span>
-                  </div>
-                </td>
-              </tr>
             </tbody>
           </table>
         </div>
@@ -486,10 +532,13 @@ async function renderRanking(weekIdx) {
           <span class="ranking-mobile-label">Оператор</span>
           ${escapeHtml(op.name)}
         </div>
-        <div class="ranking-faculty-tag ${op.fac.tagCls}">${renderCrest(op.fac, 'ranking-crest-img')} ${escapeHtml(op.fac.name)}</div>
+        <div class="ranking-faculty-tag ${op.fac.tagCls}">
+          <span class="ranking-mobile-label">Факультет</span>
+          ${renderCrest(op.fac, 'ranking-crest-img')} ${escapeHtml(op.fac.name)}
+        </div>
         <div class="ranking-pts ${op.fac.scoreCls}">
           <span class="ranking-mobile-label">Баллы</span>
-          ${fmtPts(op.pts)}
+          <strong>${fmtPts(op.pts)}</strong>
         </div>
       </div>`;
   }).join('');
@@ -509,20 +558,7 @@ function renderEditor() {
   if (!panel) return;
 
   if (!isAdmin) {
-    panel.innerHTML = `
-      <div class="editor-locked">
-        <div>
-          <div class="editor-title">Режим администратора</div>
-          <div class="editor-subtitle">Редактирование операторов и показателей доступно только после входа</div>
-        </div>
-        <div class="admin-login">
-          <input class="editor-input" id="admin-password" type="password" placeholder="Пароль администратора"
-            onkeydown="if(event.key === 'Enter') loginAdmin()" aria-label="Пароль администратора">
-          <button class="editor-btn" onclick="loginAdmin()">Войти</button>
-          <div class="admin-error" id="admin-error" aria-live="polite"></div>
-        </div>
-      </div>
-    `;
+    panel.innerHTML = '';
     return;
   }
 
@@ -738,7 +774,7 @@ function setDashboardMode(view) {
   currentView = view;
   const ratingOnly = view === 'rating';
   const sections = [
-    ['editor-panel', !ratingOnly],
+    ['editor-panel', !ratingOnly && isAdmin],
     ['scoreboard', !ratingOnly],
     ['ranking-list', true],
     ['faculty-grid', !ratingOnly],
@@ -776,10 +812,22 @@ async function showWeek(idx) {
 document.addEventListener('DOMContentLoaded', () => {
   loadEditableData();
   loadAdminSession();
+  updateAdminGate();
   renderEditor();
   renderScoreboard(4);
   renderFacultyCards(4);
   showRating();
+});
+
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape') closeAdminModal();
+});
+
+document.addEventListener('click', event => {
+  const gate = document.getElementById('admin-gate');
+  const popover = document.getElementById('admin-popover');
+  if (!gate || !popover || popover.hidden) return;
+  if (!gate.contains(event.target)) closeAdminModal();
 });
 
 

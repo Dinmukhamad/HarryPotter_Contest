@@ -6,7 +6,7 @@
   <title>Конкурс Факультетов</title>
 
   <!-- Styles -->
-  <link rel="stylesheet" href="css/styles.css?v=refined-1">
+  <link rel="stylesheet" href="css/styles.css?v=castle-strong-1">
 
   <!--
     Когда будет готов FastAPI бэкенд:
@@ -20,14 +20,6 @@
 
   <!-- Звёздный фон -->
   <div class="stars" aria-hidden="true"></div>
-
-  <div class="house-backdrop" aria-hidden="true">
-    <img class="house-flag house-flag-gryf" src="assets/flag-gryffindor-full.png" alt="">
-    <img class="house-flag house-flag-huff" src="assets/flag-hufflepuff-full.png" alt="">
-    <img class="house-flag house-flag-raven" src="assets/flag-ravenclaw-full.png" alt="">
-    <img class="house-flag house-flag-slyth" src="assets/flag-slytherin-full.png" alt="">
-    <img class="backdrop-crest" src="assets/hogwarts-crest.png" alt="">
-  </div>
 
   <!-- Декоративные SVG-элементы в стиле Гарри Поттера -->
   <div class="bg-decorations" aria-hidden="true">
@@ -177,12 +169,86 @@
       <circle cx="195" cy="35" r="1.2" fill="rgba(255,240,100,.55)"/>
     </svg>
 
+    <!-- Плавающие свечи -->
+    <svg class="bg-deco deco-candles" viewBox="0 0 180 160" xmlns="http://www.w3.org/2000/svg">
+      <g fill="none" stroke-linecap="round">
+        <path d="M36 32 C32 24 40 17 36 9 C48 18 49 27 39 35Z" fill="rgba(255,210,88,.58)"/>
+        <path d="M96 58 C91 48 102 42 97 31 C111 43 111 54 100 62Z" fill="rgba(255,210,88,.5)"/>
+        <path d="M142 28 C138 20 146 15 142 7 C154 17 154 26 145 33Z" fill="rgba(255,210,88,.54)"/>
+        <rect x="30" y="36" width="18" height="68" rx="4" fill="rgba(244,232,193,.28)" stroke="rgba(244,232,193,.28)"/>
+        <rect x="90" y="66" width="18" height="74" rx="4" fill="rgba(244,232,193,.24)" stroke="rgba(244,232,193,.24)"/>
+        <rect x="136" y="36" width="18" height="58" rx="4" fill="rgba(244,232,193,.26)" stroke="rgba(244,232,193,.26)"/>
+        <line x1="39" y1="44" x2="39" y2="92" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+        <line x1="99" y1="74" x2="99" y2="126" stroke="rgba(255,255,255,.14)" stroke-width="2"/>
+        <line x1="145" y1="44" x2="145" y2="82" stroke="rgba(255,255,255,.16)" stroke-width="2"/>
+        <ellipse cx="39" cy="106" rx="18" ry="5" fill="rgba(244,232,193,.12)"/>
+        <ellipse cx="99" cy="143" rx="18" ry="5" fill="rgba(244,232,193,.1)"/>
+        <ellipse cx="145" cy="96" rx="18" ry="5" fill="rgba(244,232,193,.1)"/>
+      </g>
+    </svg>
+
+    <!-- Крылатый ключ -->
+    <svg class="bg-deco deco-key" viewBox="0 0 190 100" xmlns="http://www.w3.org/2000/svg">
+      <g fill="none" stroke="rgba(218,171,72,.42)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="72" cy="50" r="13"/>
+        <path d="M85 50 H150 M130 50 V63 M143 50 V59"/>
+      </g>
+      <path d="M74 43 C44 14 18 12 5 30 C29 27 49 39 70 55" fill="rgba(180,210,230,.12)" stroke="rgba(180,210,230,.32)" stroke-width="1.5"/>
+      <path d="M81 42 C112 13 144 10 164 30 C133 28 109 40 85 56" fill="rgba(180,210,230,.12)" stroke="rgba(180,210,230,.32)" stroke-width="1.5"/>
+      <path d="M20 31 C34 36 48 43 64 54" stroke="rgba(180,210,230,.24)" stroke-width="1"/>
+      <path d="M148 31 C132 37 112 44 91 55" stroke="rgba(180,210,230,.24)" stroke-width="1"/>
+    </svg>
+
+    <!-- Зелье -->
+    <svg class="bg-deco deco-potion" viewBox="0 0 110 150" xmlns="http://www.w3.org/2000/svg">
+      <g fill="none" stroke-linejoin="round">
+        <rect x="42" y="10" width="26" height="30" rx="4" fill="rgba(116,217,154,.12)" stroke="rgba(201,168,76,.32)" stroke-width="2"/>
+        <path d="M36 40 H74 L88 100 Q94 130 55 138 Q16 130 22 100Z" fill="rgba(116,217,154,.14)" stroke="rgba(201,168,76,.36)" stroke-width="2"/>
+        <path d="M26 96 Q46 86 62 98 Q76 108 86 96 V106 Q88 130 55 134 Q22 128 24 106Z" fill="rgba(78,190,122,.28)"/>
+        <circle cx="42" cy="107" r="4" fill="rgba(190,255,210,.3)"/>
+        <circle cx="62" cy="116" r="3" fill="rgba(190,255,210,.28)"/>
+        <circle cx="58" cy="78" r="16" fill="none" stroke="rgba(244,232,193,.14)" stroke-width="1"/>
+        <path d="M48 4 H62" stroke="rgba(201,168,76,.36)" stroke-width="2" stroke-linecap="round"/>
+      </g>
+    </svg>
+
+    <!-- Очки и молния -->
+    <svg class="bg-deco deco-glasses" viewBox="0 0 180 95" xmlns="http://www.w3.org/2000/svg">
+      <g fill="none" stroke="rgba(244,232,193,.28)" stroke-width="4" stroke-linecap="round">
+        <circle cx="58" cy="48" r="24"/>
+        <circle cx="122" cy="48" r="24"/>
+        <path d="M82 48 Q90 42 98 48"/>
+        <path d="M34 45 H8 M146 45 H172"/>
+      </g>
+      <path d="M92 8 L77 43 H94 L82 82 L114 35 H96 Z" fill="rgba(255,214,102,.24)" stroke="rgba(255,214,102,.38)" stroke-width="2" stroke-linejoin="round"/>
+    </svg>
+
   </div>
 
   <div class="container">
 
+    <section class="house-backdrop" aria-label="Герб и флаги факультетов Хогвартса">
+      <div class="showcase-flags showcase-flags-left">
+        <img class="house-flag house-flag-gryf" src="assets/flag-gryffindor-full.png" alt="Флаг Гриффиндора">
+        <img class="house-flag house-flag-huff" src="assets/flag-hufflepuff-full.png" alt="Флаг Пуффендуя">
+      </div>
+      <div class="showcase-center">
+        <img class="backdrop-crest" src="assets/hogwarts-crest.png" alt="Герб Хогвартса">
+        <div class="showcase-copy">
+          <div class="section-kicker">Hogwarts Contest</div>
+          <h1 class="showcase-title">Конкурс Факультетов</h1>
+          <p>Открой рейтинг, затем спускайся ниже к таблицам команд и баллам операторов.</p>
+        </div>
+      </div>
+      <div class="showcase-flags showcase-flags-right">
+        <img class="house-flag house-flag-raven" src="assets/flag-ravenclaw-full.png" alt="Флаг Когтеврана">
+        <img class="house-flag house-flag-slyth" src="assets/flag-slytherin-full.png" alt="Флаг Слизерина">
+      </div>
+      <a class="scroll-cue" href="#dashboard-start" aria-label="Перейти к таблицам">Вниз к таблицам</a>
+    </section>
+
     <!-- Шапка -->
-    <header class="header">
+    <header class="header" id="dashboard-start">
       <div class="header-crest">🏆</div>
       <h1 class="header-title">Конкурс Факультетов</h1>
       <p class="header-subtitle">Таблица результатов · Контакт-центр</p>
@@ -244,8 +310,34 @@
 
   </div>
 
+  <div class="admin-gate" id="admin-gate">
+    <div class="admin-popover" id="admin-popover" hidden>
+      <div class="admin-popover-header">
+        <div>
+          <div class="admin-popover-kicker">Restricted</div>
+          <div class="admin-popover-title">Режим администратора</div>
+        </div>
+        <button class="admin-popover-close" onclick="closeAdminModal()" aria-label="Закрыть">×</button>
+      </div>
+      <div class="admin-popover-login" id="admin-login-area">
+        <input class="admin-popover-input" id="admin-password" type="password" placeholder="Пароль"
+          onkeydown="if(event.key === 'Enter') loginAdmin()" aria-label="Пароль администратора">
+        <button class="admin-popover-submit" onclick="loginAdmin()">Войти</button>
+        <div class="admin-error" id="admin-error" aria-live="polite"></div>
+      </div>
+      <div class="admin-popover-active" id="admin-active-area" hidden>
+        <p>Доступ открыт. Редактирование доступно во вкладках недель.</p>
+        <button class="admin-popover-submit ghost" onclick="logoutAdmin()">Выйти</button>
+      </div>
+    </div>
+    <button class="admin-gate-btn" id="admin-gate-btn" onclick="openAdminModal()"
+      aria-label="Открыть режим администратора" title="Режим администратора">
+      <span aria-hidden="true">⚯</span>
+    </button>
+  </div>
+
   <!-- App (подключить последним) -->
-  <script src="js/app.js?v=refined-1"></script>
+  <script src="js/app.js?v=monthly-average-1"></script>
 
 </body>
 </html>
