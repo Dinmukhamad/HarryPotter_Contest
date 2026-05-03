@@ -1,0 +1,55 @@
+/**
+ * js/api.js — Клиент для бэкенда Конкурса Факультетов
+ *
+ * Подключите в index.html ДО app.js:
+ *   <script src="js/api.js"></script>
+ *
+ * Затем в app.js установите:
+ *   const USE_MOCK = false;
+ *   const API_BASE = 'http://localhost:3000'; // или URL вашего сервера
+ */
+
+'use strict';
+
+const api = (() => {
+
+  /* Берёт базовый URL из app.js (константа API_BASE) */
+  function base() {
+    return typeof API_BASE !== 'undefined' ? API_BASE : 'http://localhost:3000';
+  }
+
+  /**
+   * Загружает состояние с сервера.
+   * Возвращает { faculties, weeklyData, metrics } или null если данных нет.
+   */
+  async function loadState() {
+    const res = await fetch(`${base()}/api/state`);
+    if (!res.ok) throw new Error(`Сервер вернул ${res.status}`);
+    const { state } = await res.json();
+    return state; // null если данных ещё нет — нормально
+  }
+
+  /**
+   * Сохраняет состояние на сервере.
+   * @param {{ faculties, weeklyData, metrics }} state
+   * @param {string} adminPassword
+   */
+  async function saveState(state, adminPassword) {
+    const res = await fetch(`${base()}/api/state`, {
+      method:  'POST',
+      headers: {
+        'Content-Type':    'application/json',
+        'X-Admin-Password': adminPassword,
+      },
+      body: JSON.stringify(state),
+    });
+
+    if (res.status === 403) throw new Error('Неверный пароль администратора');
+    if (!res.ok)            throw new Error(`Сервер вернул ${res.status}`);
+
+    return res.json();
+  }
+
+  return { loadState, saveState };
+
+})();
