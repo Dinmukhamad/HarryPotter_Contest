@@ -486,7 +486,6 @@ async function renderScoreboard(weekIdx) {
 /* ── Faculty Cards ──────────────────────────────────────────── */
 async function renderFacultyCards(weekIdx) {
   const grid = document.getElementById('faculty-grid');
-  const allTotals = await fetchScores(weekIdx);
   const publicMetrics = getPublicMetrics();
 
   const colHeaders = weekIdx < 4
@@ -496,17 +495,14 @@ async function renderFacultyCards(weekIdx) {
   let html = '';
 
   for (let fi = 0; fi < FACULTIES.length; fi++) {
-    const fac      = FACULTIES[fi];
+    const fac = FACULTIES[fi];
     const facTotal = await fetchFacultyTotal(fi, weekIdx);
-    const sorted   = allTotals[fi].slice().sort((a, b) => b.pts - a.pts);
-    const allFlat  = allTotals.flat().slice().sort((a, b) => b.pts - a.pts);
+    const visibleOperators = fac.operators.slice(0, MIN_OPERATORS_PER_FACULTY);
 
-    const rows = sorted.map(op => {
-      const globalRank = allFlat.findIndex(r => r.name === op.name) + 1;
+    const rows = visibleOperators.map((name, oi) => {
       let metricCells = '';
       if (weekIdx < 4) {
-        const origIdx = fac.operators.indexOf(op.name);
-        const row = WEEKLY_DATA[weekIdx][fi][origIdx];
+        const row = WEEKLY_DATA[weekIdx][fi][oi] || [];
         metricCells = publicMetrics.map(({ metric, index }) => {
           const value = row[index] ?? 0;
           const cls = metric.type === 'penalty' && Number(value) > 0 ? ' class="neg"' : '';
@@ -516,9 +512,8 @@ async function renderFacultyCards(weekIdx) {
 
       return `
         <tr>
-          <td class="${op.name.length <= 12 ? 'short-text' : ''}">${buildRankBadge(globalRank)}${escapeHtml(op.name)}</td>
+          <td class="operator-name-cell">${escapeHtml(name)}</td>
           ${metricCells}
-
         </tr>`;
     }).join('');
 
@@ -549,7 +544,6 @@ async function renderFacultyCards(weekIdx) {
 
   grid.innerHTML = html;
 }
-
 /* ── Overall Ranking ────────────────────────────────────────── */
 async function renderRanking(weekIdx) {
   const allTotals = await fetchScores(weekIdx);
