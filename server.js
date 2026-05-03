@@ -1,0 +1,76 @@
+'use strict';
+
+require('dotenv').config();
+
+const express = require('express');
+const cors = require('cors');
+const fs = require('fs');
+const path = require('path');
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'hogwarts2026';
+const CORS_ORIGIN = process.env.CORS_ORIGIN || '*';
+const DATA_FILE = process.env.DATA_FILE || path.join(__dirname, 'data.json');
+
+app.use(cors({
+  origin: CORS_ORIGIN,
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'X-Admin-Password'],
+}));
+app.use(express.json({ limit: '5mb' }));
+
+function readState() {
+  try {
+    if (!fs.existsSync(DATA_FILE)) return null;
+    const raw = fs.readFileSync(DATA_FILE, 'utf8');
+    return JSON.parse(raw);
+  } catch (error) {
+    console.error('Failed to read state:', error);
+    return null;
+  }
+}
+
+function writeState(state) {
+  const dir = path.dirname(DATA_FILE);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(DATA_FILE, JSON.stringify(state, null, 2), 'utf8');
+}
+
+function requireAdmin(req, res, next) {
+  const password = req.headers['x-admin-password'];
+  if (password !== ADMIN_PASSWORD) {
+    return res.status(403).json({ error: 'Invalid admin password' });
+  }
+  next();
+}
+
+app.get('/api/health', (req, res) => {
+  res.json({ ok: true, dataFile: DATA_FILE, time: new Date().toISOString() });
+});
+
+app.get('/api/state', (req, res) => {
+  res.json({ state: readState() });
+});
+
+app.post('/api/state', requireAdmin, (req, res) => {
+  const { faculties, weeklyData, metrics } = req.body || {};
+
+  if (!Array.isArray(faculties) || !Array.isArray(weeklyData) || !Array.isArray(metrics)) {
+    return res.status(400).json({ error: 'Invalid state shape' });
+  }
+
+  writeState({ faculties, weeklyData, metrics });
+  res.json({ ok: true });
+});
+
+app.use(express.static(__dirname));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.listen(PORT, () => {
+  console.log(`Harry Potter contest is running on port ${PORT}`);
+  console.log(`Data file: ${DATA_FILE}`);
+});
