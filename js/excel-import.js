@@ -71,8 +71,8 @@ function calculateImportedScore(values) {
   const csat = Number(values[2]) || 0;
   const efficiency = Number(values[3]) || 0;
   const hours = Number(values[4]) || 0;
-  const violations = Number(values[5]) || 0;
-  const late = Number(values[6]) || 0;
+  const violations = Math.abs(Number(values[5]) || 0);
+  const late = Math.abs(Number(values[6]) || 0);
 
   const score = (kzch * 10) + (qa * 2) + (csat * 40) + (efficiency * 3) + (hours * 2) - (violations * 30) - (late * 5);
   return Math.max(0, Math.round(score * 10) / 10);
