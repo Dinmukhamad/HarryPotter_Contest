@@ -218,6 +218,15 @@ async function loadEditableData() {
       normalizeEditableData();
       return;
     }
+
+    // Сервер доступен, но общих данных ещё нет. Используем чистые встроенные данные,
+    // чтобы старый localStorage отдельного браузера не попал обратно на общий сервер.
+    if (state === null) {
+      if (!METRICS.some(m => m.type === 'score')) METRICS.push({ label: 'Баллы', type: 'score' });
+      normalizeEditableData();
+      resetAllOperatorScores();
+      return;
+    }
   } catch (err) {
     console.warn('Сервер недоступен, пробуем локальный кэш…', err.message);
   }
