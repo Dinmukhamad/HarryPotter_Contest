@@ -614,7 +614,7 @@ body {
 
   .backdrop-crest {
     width: min(72vw, 260px);
-    max-height: none;
+    max-height: 456px;
     opacity: .98;
   }
 
@@ -1484,9 +1484,9 @@ body {
 .faculty-table-wrap {
   background: rgba(12,9,16,.92);
   padding: 0 0 2px;
-  max-height: none;
+  max-height: 456px;
   overflow-x: hidden;
-  overflow-y: visible;
+  overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
 
