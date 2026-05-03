@@ -497,7 +497,7 @@ async function renderFacultyCards(weekIdx) {
   for (let fi = 0; fi < FACULTIES.length; fi++) {
     const fac = FACULTIES[fi];
     const facTotal = await fetchFacultyTotal(fi, weekIdx);
-    const visibleOperators = fac.operators.slice(0, MIN_OPERATORS_PER_FACULTY);
+    const visibleOperators = fac.operators;
 
     const rows = visibleOperators.map((name, oi) => {
       let metricCells = '';
