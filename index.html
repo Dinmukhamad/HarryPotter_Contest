@@ -9,7 +9,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon-180.png?v=crest-favicon-1">
 
   <!-- Styles -->
-  <link rel="stylesheet" href="css/styles.css?v=operator-overflow-scroll-1">
+  <link rel="stylesheet" href="css/styles.css?v=restore-operator-scores-1">
 
   <!--
     Когда будет готов FastAPI бэкенд:
@@ -241,7 +241,7 @@
         <div class="showcase-copy">
           <div class="section-kicker">Hogwarts Contest</div>
           <h1 class="showcase-title">Конкурс Факультетов</h1>
-          <p>Открой рейтинг, затем спускайся ниже к таблицам команд и показателям операторов.</p>
+          <p>Открой рейтинг, затем спускайся ниже к таблицам команд и баллам операторов.</p>
         </div>
       </div>
       <div class="showcase-flags showcase-flags-right">
@@ -286,13 +286,14 @@
           <h2 class="section-title">Общий рейтинг операторов</h2>
         </div>
         <div class="section-help">
-          <strong>Как читать таблицу:</strong> место считается по итоговому результату за месяц. Смотри позицию, оператора и факультет.
+          <strong>Как читать таблицу:</strong> место считается по итоговым баллам за месяц. Смотри позицию, факультет и итоговые баллы.
         </div>
       </div>
       <div class="ranking-table-head" aria-hidden="true">
         <span>Место</span>
         <span>Оператор</span>
         <span>Факультет</span>
+        <span>Баллы</span>
         
       </div>
       <div class="ranking-list" id="ranking-list">
@@ -304,9 +305,9 @@
     <section class="details-intro" aria-label="Подробные таблицы команд">
       <div>
         <div class="section-kicker">Командные таблицы</div>
-        <h2 class="section-title">Показатели операторов по факультетам</h2>
+        <h2 class="section-title">Баллы операторов по факультетам</h2>
       </div>
-      <p class="section-help">Сверху идут первые две команды, ниже третья и четвёртая. Внутри каждой таблицы операторы отсортированы по итоговому результату.</p>
+      <p class="section-help">Сверху идут первые две команды, ниже третья и четвёртая. Внутри каждой таблицы операторы идут по списку команды, а баллы видны в последней колонке.</p>
     </section>
     <section class="faculties-grid" id="faculty-grid" aria-label="Факультеты">
       <!-- заполняется из app.js → renderFacultyCards() -->
@@ -341,7 +342,7 @@
   </div>
 
   <!-- App (подключить последним) -->
-  <script src="js/app.js?v=operator-names-1"></script>
+  <script src="js/app.js?v=restore-operator-scores-1"></script>
 
 </body>
 </html>
