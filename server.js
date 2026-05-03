@@ -64,9 +64,19 @@ app.post('/api/state', requireAdmin, (req, res) => {
   res.json({ ok: true });
 });
 
-app.use(express.static(__dirname));
+const cacheOptions = { maxAge: '1h', index: false, dotfiles: 'deny' };
+app.use('/assets', express.static(path.join(__dirname, 'assets'), cacheOptions));
+app.use('/css', express.static(path.join(__dirname, 'css'), cacheOptions));
+app.use('/js', express.static(path.join(__dirname, 'js'), cacheOptions));
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 app.get('*', (req, res) => {
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({ error: 'Not found' });
+  }
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
