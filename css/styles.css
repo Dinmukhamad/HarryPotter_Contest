@@ -1882,3 +1882,147 @@ table.operators tbody tr:hover {
 }
 
 .neg { color: #c0392b; font-size: 12px; }
+
+
+/* ── Excel import block (inside admin popover) ────────────── */
+.excel-import-block {
+  background: rgba(201,168,76,.06);
+  border: 1px solid rgba(201,168,76,.25);
+  border-radius: 6px;
+  padding: 14px 16px;
+  margin: 14px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.excel-import-title {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  color: var(--gold, #c9a84c);
+  margin-bottom: 4px;
+}
+
+.excel-import-label {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: rgba(244,232,193,.55);
+  margin-top: 4px;
+}
+
+.admin-popover-select {
+  width: 100%;
+  background: rgba(244,232,193,.07);
+  border: 1px solid rgba(201,168,76,.3);
+  border-radius: 4px;
+  color: rgba(244,232,193,.9);
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  padding: 7px 10px;
+  outline: none;
+  cursor: pointer;
+}
+
+.admin-popover-select:focus {
+  border-color: rgba(201,168,76,.7);
+}
+
+.admin-popover-select option {
+  background: #2a1c0e;
+  color: #f4e8c1;
+}
+
+/* Custom file picker */
+.excel-file-label {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: rgba(244,232,193,.07);
+  border: 1px solid rgba(201,168,76,.3);
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color .2s;
+}
+
+.excel-file-label:hover {
+  border-color: rgba(201,168,76,.65);
+}
+
+.excel-file-input-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  opacity: 0; pointer-events: none;
+}
+
+#excel-file-name {
+  flex: 1;
+  padding: 7px 10px;
+  font-size: 12px;
+  color: rgba(244,232,193,.7);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.excel-file-btn {
+  padding: 7px 12px;
+  background: rgba(201,168,76,.15);
+  border-left: 1px solid rgba(201,168,76,.25);
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(201,168,76,.9);
+  letter-spacing: .05em;
+  white-space: nowrap;
+}
+
+.excel-import-go {
+  margin-top: 4px;
+  background: rgba(201,168,76,.18) !important;
+  border: 1px solid rgba(201,168,76,.5) !important;
+  color: var(--gold, #c9a84c) !important;
+  font-size: 13px !important;
+}
+
+.excel-import-go:hover {
+  background: rgba(201,168,76,.3) !important;
+}
+
+/* Status messages */
+.import-status {
+  font-size: 12px;
+  line-height: 1.5;
+  padding: 8px 10px;
+  border-radius: 4px;
+  white-space: pre-wrap;
+}
+
+.import-status--success {
+  background: rgba(42,98,61,.3);
+  border: 1px solid rgba(42,98,61,.6);
+  color: #8ecfa0;
+}
+
+.import-status--error {
+  background: rgba(116,0,1,.25);
+  border: 1px solid rgba(174,0,1,.5);
+  color: #e08080;
+}
+
+.import-status--warn {
+  background: rgba(176,120,0,.2);
+  border: 1px solid rgba(201,168,76,.45);
+  color: #e0c060;
+}
+
+.import-status--info {
+  background: rgba(14,26,64,.4);
+  border: 1px solid rgba(148,107,45,.4);
+  color: rgba(244,232,193,.7);
+}
