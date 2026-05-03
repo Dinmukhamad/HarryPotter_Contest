@@ -332,6 +332,32 @@
       </div>
       <div class="admin-popover-active" id="admin-active-area" hidden>
         <p>Доступ открыт. Редактирование доступно во вкладках недель.</p>
+
+        <div class="excel-import-block">
+          <div class="excel-import-title">📥 Загрузить баллы из Excel</div>
+
+          <label class="excel-import-label" for="import-week-select">Неделя:</label>
+          <select class="admin-popover-select" id="import-week-select">
+            <option value="0">Неделя 1</option>
+            <option value="1">Неделя 2</option>
+            <option value="2">Неделя 3</option>
+            <option value="3">Неделя 4</option>
+          </select>
+
+          <label class="excel-import-label" for="excel-file-input">Файл (.xlsx / .xls):</label>
+          <label class="excel-file-label" id="excel-file-label">
+            <input type="file" id="excel-file-input" accept=".xlsx,.xls,.ods" class="excel-file-input-hidden">
+            <span id="excel-file-name">Выберите файл…</span>
+            <span class="excel-file-btn">Обзор</span>
+          </label>
+
+          <button class="admin-popover-submit excel-import-go" id="excel-import-btn">
+            ⚡ Применить
+          </button>
+
+          <div class="import-status" id="import-status" hidden></div>
+        </div>
+
         <button class="admin-popover-submit ghost" onclick="logoutAdmin()">Выйти</button>
       </div>
     </div>
@@ -342,7 +368,10 @@
   </div>
 
   <!-- App (подключить последним) -->
+  <!-- SheetJS — парсинг Excel в браузере -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="js/app.js?v=clear-operator-metrics-1"></script>
+  <script src="js/excel-import.js"></script>
 
 </body>
 </html>
