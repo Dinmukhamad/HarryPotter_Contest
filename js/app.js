@@ -38,129 +38,21 @@ const HOUSE_CRESTS = {
    [КЗЧ, QA, CSat, Эфф%, Часы%, Нарушения, Опоздания, Баллы]
    ============================================================ */
 let FACULTIES = [
-  {
-    id: 'gryf', cls: 'gryf', icon: '🦁',
-    crest: HOUSE_CRESTS.gryf,
-    name: 'Гриффиндор',
-    tagCls: 'tag-gryf', scoreCls: 'gryf-score',
-    operators: [
-      'Айткалиев Айдын',
-      'Алибек Аружан',
-      'Ахауова Нурсая',
-      'Багашар Аяжан',
-      'Динислам Аян',
-      'Зинелгабиден Алнур',
-      'Нурганат Нурдана',
-      'Онгарова Жанерке',
-      'Сергей Алихан',
-      'Тулегенов Ислам',
-      'Хамидов Санжар',
-      'Шаяхмет Жаркынай',
-      'Шынгысбаева Акерке',
-    ]
-  },
-  {
-    id: 'slyth', cls: 'slyth', icon: '🐍',
-    crest: HOUSE_CRESTS.slyth,
-    name: 'Слизерин',
-    tagCls: 'tag-slyth', scoreCls: 'slyth-score',
-    operators: [
-      'Абдрей Рабия',
-      'Аргимбек Даулет',
-      'Артык Каракат',
-      'Дуанаева Айша',
-      'Ернис Гулдана',
-      'Мамек Балауса',
-      'Марат Молдир',
-      'Нургазы Жанеля',
-      'Окенова Балнур',
-      'Тухтасинов Самандар',
-    ]
-  },
-  {
-    id: 'huff', cls: 'huff', icon: '🦡',
-    crest: HOUSE_CRESTS.huff,
-    name: 'Пуффендуй',
-    tagCls: 'tag-huff', scoreCls: 'huff-score',
-    operators: [
-      'Абуов Амир',
-      'Ажибаева Арухан',
-      'Жансерик Алихан',
-      'Келис Сулеймен',
-      'Кенжебек Данияр',
-      'Кошкынбай Мирас',
-      'Нурлыбай Муслим',
-      'Нурмуш Аружан',
-      'Оспан Назым',
-      'Сапар Нурали',
-      'Торгаев Ернур',
-      'Турсынбай Сания',
-      'Юлдашев Карим',
-    ]
-  },
-  {
-    id: 'raven', cls: 'raven', icon: '🦅',
-    crest: HOUSE_CRESTS.raven,
-    name: 'Когтевран',
-    tagCls: 'tag-raven', scoreCls: 'raven-score',
-    operators: [
-      'Абдуганиев Бекзат',
-      'Азаматов Шохрух',
-      'Азимакунова Айсулу',
-      'Арман Асет',
-      'Дуйсенбаев Сункар',
-      'Желдербай Бокен',
-      'Жолдас Асылбек',
-      'Ирисметова Зиеда',
-      'Нурганатова Алия',
-      'Нурлан Анель',
-      'Нуршова Айша',
-      'Орынбасаров Сейду',
-      'Рахимжанов Бехруз',
-      'Садык Аяжан',
-      'Сайнов Санжар',
-      'Хайриханов Сардар',
-    ]
-  },
+  { id: 'gryf',  cls: 'gryf',  icon: '🦁', crest: HOUSE_CRESTS.gryf,  name: 'Гриффиндор', tagCls: 'tag-gryf',  scoreCls: 'gryf-score',  operators: [] },
+  { id: 'slyth', cls: 'slyth', icon: '🐍', crest: HOUSE_CRESTS.slyth, name: 'Слизерин',   tagCls: 'tag-slyth', scoreCls: 'slyth-score', operators: [] },
+  { id: 'huff',  cls: 'huff',  icon: '🦡', crest: HOUSE_CRESTS.huff,  name: 'Пуффендуй',  tagCls: 'tag-huff',  scoreCls: 'huff-score',  operators: [] },
+  { id: 'raven', cls: 'raven', icon: '🦅', crest: HOUSE_CRESTS.raven, name: 'Когтевран',   tagCls: 'tag-raven', scoreCls: 'raven-score', operators: [] },
 ];
 
-/* Weekly data: [week][faculty][operator] → [КЗЧ,QA,CSat,Эфф%,Часы%,Нар.,Опозд.,Баллы] */
-let WEEKLY_DATA = [
-  // ── Week 1 ─────────────────────────────────────────────────
-  [
-    [[15,99,5,57,25,1,22,662.5],[22,99,5,70,29,0,26,714.5],[12,82,4,53,34,3,20,535],[23,94,4,48,31,2,24,574],[16,73,5,61,32,2,26,574.5],[7,96,5,47,26,0,29,592],[15,89,4,44,27,0,29,599.5]],
-    [[17,71,5,47,34,0,29,597.5],[13,81,4,66,31,0,11,663.5],[18,81,4,48,32,1,20,580.5],[10,93,5,58,32,3,23,594.5],[23,79,4,55,31,0,20,618.5],[10,87,5,61,34,0,23,677.5],[22,72,5,47,39,3,21,531]],
-    [[14,80,4,55,28,1,15,590],[18,85,5,60,30,0,10,650],[11,75,4,45,25,2,20,500],[20,90,5,65,32,0,18,680],[16,78,4,50,27,1,22,560],[9,88,5,55,31,0,25,610],[19,82,4,58,29,2,19,570]],
-    [[13,77,4,52,26,1,18,555],[17,83,5,62,31,0,14,635],[21,91,5,68,33,0,16,685],[8,72,4,42,24,3,25,480],[15,86,4,57,28,1,20,595],[12,79,5,48,30,0,22,580],[20,95,5,70,35,0,12,710]],
-  ],
-  // ── Week 2 ─────────────────────────────────────────────────
-  [
-    [[15,74,5,61,33,1,13,634],[7,99,5,49,34,2,14,581.5],[23,79,4,44,27,1,16,570.5],[9,71,4,50,31,3,19,480.5],[18,83,5,46,30,2,10,599.5],[16,83,4,65,28,3,19,557.5],[5,72,4,64,33,2,11,479]],
-    [[15,79,5,54,30,3,20,555.5],[21,96,4,49,36,1,29,606],[8,94,5,48,26,1,20,597],[20,92,5,57,36,2,28,614],[9,88,5,51,34,1,19,618],[24,76,5,64,25,1,13,637],[22,96,5,61,31,3,26,601]],
-    [[16,80,4,54,30,1,16,595],[19,86,5,63,32,0,11,648],[12,76,4,46,26,2,21,502],[21,91,5,66,33,0,17,675],[17,79,4,51,28,1,23,562],[10,89,5,56,32,0,26,614],[20,83,4,59,30,2,20,572]],
-    [[14,78,4,53,27,1,19,558],[18,84,5,63,32,0,15,638],[22,92,5,69,34,0,17,688],[9,73,4,43,25,3,26,482],[16,87,4,58,29,1,21,598],[13,80,5,49,31,0,23,583],[21,96,5,71,36,0,13,713]],
-  ],
-  // ── Week 3 ─────────────────────────────────────────────────
-  [
-    [[15,73,5,61,27,3,15,561.5],[16,71,4,70,35,1,22,598.5],[6,84,4,57,27,2,30,471],[18,74,4,65,31,0,14,638],[10,86,5,63,33,0,27,670],[23,74,5,47,38,1,25,587],[5,93,5,56,26,1,25,540.5]],
-    [[15,85,4,41,36,0,27,596.5],[19,78,4,57,29,3,29,510],[8,94,4,57,29,3,21,526],[9,75,5,58,37,1,11,618.5],[10,76,4,60,29,0,11,637],[10,89,5,44,31,3,23,555.5],[24,73,5,57,40,1,15,626.5]],
-    [[15,81,4,55,29,1,17,596],[20,87,5,64,33,0,12,651],[13,77,4,47,27,2,22,504],[22,92,5,67,34,0,18,678],[17,80,4,52,29,1,24,565],[11,90,5,57,33,0,27,617],[21,84,4,60,31,2,21,575]],
-    [[14,79,4,54,28,1,20,561],[19,85,5,64,33,0,16,641],[23,93,5,70,35,0,18,691],[10,74,4,44,26,3,27,485],[17,88,4,59,30,1,22,601],[14,81,5,50,32,0,24,586],[22,97,5,72,37,0,14,716]],
-  ],
-  // ── Week 4 ─────────────────────────────────────────────────
-  [
-    [[15,96,4,53,33,1,29,611],[23,99,5,58,36,0,24,701.5],[23,84,5,57,34,1,19,640],[10,89,4,52,40,2,19,588.5],[15,88,5,52,30,0,24,656],[13,81,5,65,26,2,11,626.5],[22,91,4,41,28,3,13,541.5]],
-    [[15,84,4,41,31,0,24,595],[10,84,5,53,36,3,29,554],[19,87,4,54,29,3,18,548.5],[15,92,5,49,25,2,26,591],[11,94,5,40,31,2,17,602],[14,100,4,63,37,0,30,673],[17,86,5,43,33,1,18,618]],
-    [[16,82,4,56,30,1,18,598],[21,88,5,65,34,0,13,653],[14,78,4,48,28,2,23,506],[23,93,5,68,35,0,19,681],[18,81,4,53,30,1,25,568],[12,91,5,58,34,0,28,619],[22,85,4,61,32,2,22,578]],
-    [[15,80,4,55,29,1,21,564],[20,86,5,65,34,0,17,644],[24,94,5,71,36,0,19,694],[11,75,4,45,27,3,28,488],[18,89,4,60,31,1,23,604],[15,82,5,51,33,0,25,589],[23,98,5,73,38,0,15,719]],
-  ],
-];
+/* Weekly data: [week][faculty][operator] → [...метрики, Баллы]
+   Заполняется исключительно через сервер (POST /api/state).
+   Не хранится в localStorage. */
+let WEEKLY_DATA = [ [], [], [], [] ];
+
 
 const COLS = ['КЗЧ', 'QA', 'CSat', 'Эфф%', 'Часы%', 'Нар.', 'Опозд.', 'Баллы'];
-const STORAGE_KEY = 'hpContestEditableData';
 const ADMIN_SESSION_KEY = 'hpContestAdminUnlocked';
 const ADMIN_PASSWORD = 'hogwarts2026';
-const MIN_OPERATORS_PER_FACULTY = 10;
 let isAdmin = false;
 let METRICS = COLS.map((label, idx) => ({
   label,
@@ -198,9 +90,7 @@ function normalizeEditableData() {
 
   FACULTIES.forEach(fac => {
     fac.crest = HOUSE_CRESTS[fac.id] || fac.crest;
-    while (fac.operators.length < MIN_OPERATORS_PER_FACULTY) {
-      fac.operators.push(`Оператор ${fac.name} ${fac.operators.length + 1}`);
-    }
+    // Операторы загружаются только с сервера — авто-дополнение отключено
   });
 
   WEEKLY_DATA.forEach((week, wi) => {
@@ -228,73 +118,34 @@ function normalizeEditableData() {
 }
 
 async function loadEditableData() {
-  try {
-    // 1. Пробуем загрузить с сервера
-    const state = await api.loadState();
-    if (state && Array.isArray(state.faculties) && Array.isArray(state.weeklyData) && Array.isArray(state.metrics)) {
-      FACULTIES   = state.faculties;
-      WEEKLY_DATA = state.weeklyData;
-      METRICS     = state.metrics;
-      console.log('✅ Данные загружены с сервера');
+  // Единственный источник данных — сервер. localStorage не используется.
+  const state = await api.loadState(); // выбросит исключение если сервер недоступен
 
-      // Сохраняем локально как кэш на случай офлайна
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (_) {}
-
-      if (!METRICS.some(m => m.type === 'score')) METRICS.push({ label: 'Баллы', type: 'score' });
-      normalizeEditableData();
-      return;
-    }
-
-    // Сервер доступен, но общих данных ещё нет. Используем чистые встроенные данные,
-    // чтобы старый localStorage отдельного браузера не попал обратно на общий сервер.
-    if (state === null) {
-      if (!METRICS.some(m => m.type === 'score')) METRICS.push({ label: 'Баллы', type: 'score' });
-      normalizeEditableData();
-      resetAllOperatorScores();
-      return;
-    }
-  } catch (err) {
-    console.warn('Сервер недоступен, пробуем локальный кэш…', err.message);
+  if (state && Array.isArray(state.faculties) && Array.isArray(state.weeklyData) && Array.isArray(state.metrics)) {
+    FACULTIES   = state.faculties;
+    WEEKLY_DATA = state.weeklyData;
+    METRICS     = state.metrics;
+    console.log('✅ Данные загружены с сервера');
   }
-
-  // 2. Фолбэк: локальный кэш (localStorage)
-  let loadedFromCache = false;
-  try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    if (saved && Array.isArray(saved.faculties) && Array.isArray(saved.weeklyData) && Array.isArray(saved.metrics)) {
-      FACULTIES   = saved.faculties;
-      WEEKLY_DATA = saved.weeklyData;
-      METRICS     = saved.metrics;
-      loadedFromCache = true;
-      console.warn('⚠️ Используются кэшированные данные (сервер недоступен)');
-    }
-  } catch (err) {
-    console.warn('Не удалось загрузить кэш', err);
-  }
+  // state === null означает: сервер работает, но данных ещё нет (первый запуск)
+  // FACULTIES и WEEKLY_DATA остаются пустыми — это нормально
 
   if (!METRICS.some(m => m.type === 'score')) METRICS.push({ label: 'Баллы', type: 'score' });
   normalizeEditableData();
-
-  if (!loadedFromCache) {
-    resetAllOperatorScores();
-  }
 }
 
 async function saveEditableData() {
   normalizeEditableData();
   const state = { faculties: FACULTIES, weeklyData: WEEKLY_DATA, metrics: METRICS };
 
-  // Всегда сохраняем в localStorage как кэш
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (_) {}
-
-  // Сохраняем на сервер
+  // Только сервер — никакого localStorage
   try {
     await api.saveState(state, ADMIN_PASSWORD);
     console.log('✅ Данные сохранены на сервере');
   } catch (err) {
-    console.error('❌ Не удалось сохранить на сервере:', err.message);
-    // Не прерываем работу — данные уже в localStorage как резерв
-    alert(`⚠️ Не удалось сохранить на сервере: ${err.message}\nДанные сохранены локально.`);
+    console.error('❌ Ошибка сохранения:', err.message);
+    alert('⚠ Не удалось сохранить данные на сервере:\n' + err.message);
+    throw err;
   }
 }
 
@@ -899,7 +750,22 @@ async function showWeek(idx) {
 
 /* ── Init ───────────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', async () => {
-  await loadEditableData();   // ← ждём загрузки с сервера
+  try {
+    await loadEditableData();
+  } catch (err) {
+    console.error('Не удалось загрузить данные с сервера:', err);
+    // Показываем баннер ошибки — данные не грузятся из локалки
+    const banner = document.createElement('div');
+    banner.style.cssText = [
+      'position:fixed','top:0','left:0','right:0','z-index:9999',
+      'background:#740001','color:#f4e8c1','font-family:Cinzel,serif',
+      'font-size:13px','text-align:center','padding:10px 16px',
+      'letter-spacing:.05em','cursor:pointer',
+    ].join(';');
+    banner.textContent = '⚠ Сервер недоступен. Данные не загружены. Нажмите для повтора.';
+    banner.onclick = () => { banner.remove(); location.reload(); };
+    document.body.prepend(banner);
+  }
   loadAdminSession();
   updateAdminGate();
   renderEditor();
