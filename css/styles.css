@@ -1484,9 +1484,9 @@ body {
 .faculty-table-wrap {
   background: rgba(12,9,16,.92);
   padding: 0 0 2px;
-  max-height: 470px;
+  max-height: none;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: visible;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -1544,8 +1544,7 @@ table.operators td:first-child {
   padding-left: 10px;
   font-weight: 600;
   font-size: 13px;
-  white-space: normal;
-  overflow-wrap: anywhere;
+  white-space: nowrap;`n  overflow: hidden;`n  text-overflow: ellipsis;
   text-overflow: clip;
 }
 
