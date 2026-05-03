@@ -241,7 +241,7 @@
         <div class="showcase-copy">
           <div class="section-kicker">Hogwarts Contest</div>
           <h1 class="showcase-title">Конкурс Факультетов</h1>
-          <p>Открой рейтинг, затем спускайся ниже к таблицам команд и баллам операторов.</p>
+          <p>Открой рейтинг, затем спускайся ниже к таблицам команд и показателям операторов.</p>
         </div>
       </div>
       <div class="showcase-flags showcase-flags-right">
@@ -286,14 +286,14 @@
           <h2 class="section-title">Общий рейтинг операторов</h2>
         </div>
         <div class="section-help">
-          <strong>Как читать таблицу:</strong> место считается по итоговым баллам за месяц. Сначала смотри позицию, затем факультет и итоговые баллы.
+          <strong>Как читать таблицу:</strong> место считается по итоговому результату за месяц. Смотри позицию, оператора и факультет.
         </div>
       </div>
       <div class="ranking-table-head" aria-hidden="true">
         <span>Место</span>
         <span>Оператор</span>
         <span>Факультет</span>
-        <span>Баллы</span>
+        
       </div>
       <div class="ranking-list" id="ranking-list">
         <!-- заполняется из app.js → renderRanking() -->
@@ -304,9 +304,9 @@
     <section class="details-intro" aria-label="Подробные таблицы команд">
       <div>
         <div class="section-kicker">Командные таблицы</div>
-        <h2 class="section-title">Баллы операторов по факультетам</h2>
+        <h2 class="section-title">Показатели операторов по факультетам</h2>
       </div>
-      <p class="section-help">Сверху идут первые две команды, ниже третья и четвёртая. Внутри каждой таблицы операторы отсортированы по баллам.</p>
+      <p class="section-help">Сверху идут первые две команды, ниже третья и четвёртая. Внутри каждой таблицы операторы отсортированы по итоговому результату.</p>
     </section>
     <section class="faculties-grid" id="faculty-grid" aria-label="Факультеты">
       <!-- заполняется из app.js → renderFacultyCards() -->
@@ -341,7 +341,7 @@
   </div>
 
   <!-- App (подключить последним) -->
-  <script src="js/app.js?v=railway-buttons-fix-1"></script>
+  <script src="js/app.js?v=shared-state-no-operator-scores-1"></script>
 
 </body>
 </html>
