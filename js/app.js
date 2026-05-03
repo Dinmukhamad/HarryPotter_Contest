@@ -15,10 +15,13 @@
    USE_MOCK = true  → данные берутся из MOCK_DATA ниже
    USE_MOCK = false → данные запрашиваются через API (api.js)
    ---------------------------------------------------------- */
-const USE_MOCK = true;
+const USE_MOCK = false;
 
-/* ── API Base URL (используется когда USE_MOCK = false) ──── */
-const API_BASE = 'http://localhost:8000/api/v1';
+/* ── API Base URL — укажите URL вашего бэкенда ───────────
+   Локально:    'http://localhost:3000'
+   На сервере:  'https://your-app.railway.app'  (и т.п.)
+   -------------------------------------------------------- */
+const API_BASE = 'http://localhost:3000';
 
 const HOUSE_CRESTS = {
   gryf: 'assets/crest-gryffindor.png',
@@ -181,31 +184,60 @@ function normalizeEditableData() {
   });
 }
 
-function loadEditableData() {
+async function loadEditableData() {
+  try {
+    // 1. Пробуем загрузить с сервера
+    const state = await api.loadState();
+    if (state && Array.isArray(state.faculties) && Array.isArray(state.weeklyData) && Array.isArray(state.metrics)) {
+      FACULTIES   = state.faculties;
+      WEEKLY_DATA = state.weeklyData;
+      METRICS     = state.metrics;
+      console.log('✅ Данные загружены с сервера');
+
+      // Сохраняем локально как кэш на случай офлайна
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (_) {}
+
+      if (!METRICS.some(m => m.type === 'score')) METRICS.push({ label: 'Баллы', type: 'score' });
+      normalizeEditableData();
+      return;
+    }
+  } catch (err) {
+    console.warn('Сервер недоступен, пробуем локальный кэш…', err.message);
+  }
+
+  // 2. Фолбэк: локальный кэш (localStorage)
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
     if (saved && Array.isArray(saved.faculties) && Array.isArray(saved.weeklyData) && Array.isArray(saved.metrics)) {
-      FACULTIES = saved.faculties;
+      FACULTIES   = saved.faculties;
       WEEKLY_DATA = saved.weeklyData;
-      METRICS = saved.metrics;
+      METRICS     = saved.metrics;
+      console.warn('⚠️ Используются кэшированные данные (сервер недоступен)');
     }
   } catch (err) {
-    console.warn('Не удалось загрузить сохраненные данные', err);
+    console.warn('Не удалось загрузить кэш', err);
   }
 
-  if (!METRICS.some(metric => metric.type === 'score')) {
-    METRICS.push({ label: 'Баллы', type: 'score' });
-  }
+  if (!METRICS.some(m => m.type === 'score')) METRICS.push({ label: 'Баллы', type: 'score' });
   normalizeEditableData();
 }
 
-function saveEditableData() {
+async function await saveEditableData() {
   normalizeEditableData();
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({
-    faculties: FACULTIES,
-    weeklyData: WEEKLY_DATA,
-    metrics: METRICS,
-  }));
+  const state = { faculties: FACULTIES, weeklyData: WEEKLY_DATA, metrics: METRICS };
+
+  // Всегда сохраняем в localStorage как кэш
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (_) {}
+
+  // Сохраняем на сервер
+  try {
+    await api.saveState(state, ADMIN_PASSWORD);
+    console.log('✅ Данные сохранены на сервере');
+  } catch (err) {
+    console.error('❌ Не удалось сохранить на сервере:', err.message);
+    // Не прерываем работу — данные уже в localStorage как резерв
+    alert(`⚠️ Не удалось сохранить на сервере: ${err.message}\nДанные сохранены локально.`);
+  }
 }
 
 function escapeHtml(value) {
@@ -657,21 +689,21 @@ function renderEditor() {
   `;
 }
 
-function updateOperatorName(facIdx, opIdx, value) {
+async function updateOperatorName(facIdx, opIdx, value) {
   if (!requireAdmin()) return;
   FACULTIES[facIdx].operators[opIdx] = value.trim() || `Оператор ${opIdx + 1}`;
-  saveEditableData();
+  await saveEditableData();
   refreshDashboard();
 }
 
-function updateOperatorMetric(weekIdx, facIdx, opIdx, metricIdx, value) {
+async function updateOperatorMetric(weekIdx, facIdx, opIdx, metricIdx, value) {
   if (!requireAdmin()) return;
   WEEKLY_DATA[weekIdx][facIdx][opIdx][metricIdx] = Number(value) || 0;
-  saveEditableData();
+  await saveEditableData();
   refreshDashboard();
 }
 
-function addOperator(facIdx) {
+async function addOperator(facIdx) {
   if (!requireAdmin()) return;
   const input = document.getElementById(`new-operator-${facIdx}`);
   const name = input.value.trim();
@@ -682,12 +714,12 @@ function addOperator(facIdx) {
     week[facIdx].push(Array(METRICS.length).fill(0));
   });
 
-  saveEditableData();
+  await saveEditableData();
   renderEditor();
   refreshDashboard();
 }
 
-function removeOperator(facIdx, opIdx) {
+async function removeOperator(facIdx, opIdx) {
   if (!requireAdmin()) return;
   const name = FACULTIES[facIdx].operators[opIdx];
   if (!confirm(`Удалить оператора "${name}" и все его показатели за 4 недели?`)) return;
@@ -695,27 +727,27 @@ function removeOperator(facIdx, opIdx) {
   FACULTIES[facIdx].operators.splice(opIdx, 1);
   WEEKLY_DATA.forEach(week => week[facIdx].splice(opIdx, 1));
 
-  saveEditableData();
+  await saveEditableData();
   renderEditor();
   refreshDashboard();
 }
 
-function updateMetricLabel(metricIdx, value) {
+async function updateMetricLabel(metricIdx, value) {
   if (!requireAdmin()) return;
   METRICS[metricIdx].label = value.trim() || `Показатель ${metricIdx + 1}`;
-  saveEditableData();
+  await saveEditableData();
   refreshDashboard();
 }
 
-function updateMetricType(metricIdx, value) {
+async function updateMetricType(metricIdx, value) {
   if (!requireAdmin()) return;
   if (METRICS[metricIdx].type === 'score') return;
   METRICS[metricIdx].type = value === 'penalty' ? 'penalty' : 'metric';
-  saveEditableData();
+  await saveEditableData();
   refreshDashboard();
 }
 
-function addMetric() {
+async function addMetric() {
   if (!requireAdmin()) return;
   const nameInput = document.getElementById('new-metric-name');
   const typeInput = document.getElementById('new-metric-type');
@@ -734,12 +766,12 @@ function addMetric() {
     });
   });
 
-  saveEditableData();
+  await saveEditableData();
   renderEditor();
   refreshDashboard();
 }
 
-function removeMetric(metricIdx) {
+async function removeMetric(metricIdx) {
   if (!requireAdmin()) return;
   if (METRICS[metricIdx].type === 'score') return;
   if (!confirm(`Удалить показатель "${METRICS[metricIdx].label}" из всех операторов за 4 недели?`)) return;
@@ -751,7 +783,7 @@ function removeMetric(metricIdx) {
     });
   });
 
-  saveEditableData();
+  await saveEditableData();
   renderEditor();
   refreshDashboard();
 }
@@ -809,8 +841,8 @@ async function showWeek(idx) {
 }
 
 /* ── Init ───────────────────────────────────────────────────── */
-document.addEventListener('DOMContentLoaded', () => {
-  loadEditableData();
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadEditableData();   // ← ждём загрузки с сервера
   loadAdminSession();
   updateAdminGate();
   renderEditor();
