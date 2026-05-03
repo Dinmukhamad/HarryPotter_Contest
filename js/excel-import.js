@@ -56,13 +56,26 @@ const FACULTY_NAME_MAP = {
 
 /* ── Утилиты ─────────────────────────────────────────────── */
 function norm(str) {
-  return String(str || '').trim().toLowerCase();
+  return String(str || '').trim().toLowerCase().replace(/\\s+/g, ' ');
 }
 
 function toNum(v) {
   if (v === null || v === undefined || v === '') return 0;
-  const n = parseFloat(String(v).replace(',', '.'));
+  const n = parseFloat(String(v).replace(/\\s/g, '').replace('%', '').replace(',', '.'));
   return isNaN(n) ? 0 : n;
+}
+
+function calculateImportedScore(values) {
+  const kzch = Number(values[0]) || 0;
+  const qa = Number(values[1]) || 0;
+  const csat = Number(values[2]) || 0;
+  const efficiency = Number(values[3]) || 0;
+  const hours = Number(values[4]) || 0;
+  const violations = Number(values[5]) || 0;
+  const late = Number(values[6]) || 0;
+
+  const score = (kzch * 10) + (qa * 2) + (csat * 40) + (efficiency * 3) + (hours * 2) - (violations * 30) - (late * 5);
+  return Math.max(0, Math.round(score * 10) / 10);
 }
 
 /* Показывает сообщение внутри модала импорта */
@@ -82,6 +95,11 @@ function setImportStatus(msg, type = 'info') {
 
 /* ── Основная функция парсинга ───────────────────────────── */
 function parseExcelAndApply(file, weekIndex) {
+  if (typeof XLSX === 'undefined') {
+    setImportStatus('Библиотека Excel не загрузилась. Обновите страницу и попробуйте ещё раз.', 'error');
+    return;
+  }
+
   setImportStatus('Читаю файл…');
 
   const reader = new FileReader();
@@ -93,7 +111,7 @@ function parseExcelAndApply(file, weekIndex) {
       /* Берём первый лист */
       const sheetName = workbook.SheetNames[0];
       const sheet     = workbook.Sheets[sheetName];
-      const rows      = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: null });
+      const rows      = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: null, raw: false });
 
       if (rows.length < 2) {
         setImportStatus('Файл пустой или содержит только заголовок.', 'error');
@@ -177,7 +195,8 @@ function parseExcelAndApply(file, weekIndex) {
         /* Перерендер текущего экрана */
         renderScoreboard(currentWeek);
         renderFacultyCards(currentWeek);
-        showRating();
+        renderRanking(currentWeek);
+        renderEditor();
 
         let msg = `✅ Импорт завершён: ${imported} строк загружено`;
         if (skipped)        msg += `, ${skipped} пропущено`;
@@ -210,19 +229,19 @@ function fillOperatorRow(opIdx, facIdx, weekIndex, excelRow, metricColIndexes, m
   /* Заполняем метрики */
   let hasExplicitScore = false;
   Object.entries(metricColIndexes).forEach(([colIdx, metricIdx]) => {
-    const val = toNum(excelRow[+colIdx]);
+    const rawValue = excelRow[+colIdx];
+    const val = toNum(rawValue);
     if (metricIdx < arr.length) {
       arr[metricIdx] = val;
-      if (metricIdx === scoreIdx) hasExplicitScore = true;
+      if (metricIdx === scoreIdx && rawValue !== null && rawValue !== undefined && String(rawValue).trim() !== '') {
+        hasExplicitScore = true;
+      }
     }
   });
 
-  /* Если баллы не заданы явно — не трогаем (пусть останутся 0 или старое значение) */
-  /* Если нужна автоформула — раскомментируйте блок ниже:
   if (!hasExplicitScore) {
-    arr[scoreIdx] = 0; // здесь можно вставить вашу формулу
+    arr[scoreIdx] = calculateImportedScore(arr);
   }
-  */
 }
 
 /* ── UI: инициализация кнопки и обработчика ─────────────── */
