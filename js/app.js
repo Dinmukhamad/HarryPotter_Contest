@@ -512,11 +512,12 @@ async function renderScoreboard(weekIdx) {
 /* ── Faculty Cards ──────────────────────────────────────────── */
 async function renderFacultyCards(weekIdx) {
   const grid = document.getElementById('faculty-grid');
-  const publicMetrics = getPublicMetrics();
+  const allTotals = await fetchScores(weekIdx);
+  const maxPts = Math.max(1, ...allTotals.flat().map(o => o.pts));
 
   const colHeaders = weekIdx < 4
-    ? publicMetrics.map(({ metric }) => `<th class="metric-col metric-${metric.type}">${escapeHtml(metric.label)}</th>`).join('')
-    : '';
+    ? METRICS.map(metric => `<th class="metric-col metric-${metric.type}">${escapeHtml(metric.label)}</th>`).join('')
+    : '<th>Баллы (итого)</th>';
 
   let html = '';
 
@@ -526,11 +527,26 @@ async function renderFacultyCards(weekIdx) {
     const visibleOperators = fac.operators;
 
     const rows = visibleOperators.map((name, oi) => {
+      const opTotal = allTotals[fi][oi]?.pts || 0;
+      const pct = Math.round((opTotal / maxPts) * 100);
       let metricCells = '';
+
       if (weekIdx < 4) {
         const row = WEEKLY_DATA[weekIdx][fi][oi] || [];
-        metricCells = publicMetrics.map(({ metric, index }) => {
+        metricCells = METRICS.map((metric, index) => {
           const value = row[index] ?? 0;
+          if (metric.type === 'score') {
+            return `
+              <td class="metric-score-cell">
+                <div class="score-bar-wrap">
+                  <div class="score-bar">
+                    <div class="score-bar-fill" style="width:${pct}%"></div>
+                  </div>
+                  <span class="pts-value">${fmtPts(opTotal)}</span>
+                </div>
+              </td>`;
+          }
+
           const cls = metric.type === 'penalty' && Number(value) > 0 ? ' class="neg"' : '';
           return `<td${cls}>${formatMetricValue(value, metric)}</td>`;
         }).join('');
@@ -539,7 +555,14 @@ async function renderFacultyCards(weekIdx) {
       return `
         <tr>
           <td class="operator-name-cell">${escapeHtml(name)}</td>
-          ${metricCells}
+          ${weekIdx < 4 ? metricCells : `<td>
+            <div class="score-bar-wrap">
+              <div class="score-bar">
+                <div class="score-bar-fill" style="width:${pct}%"></div>
+              </div>
+              <span class="pts-value">${fmtPts(opTotal)}</span>
+            </div>
+          </td>`}
         </tr>`;
     }).join('');
 
@@ -581,7 +604,7 @@ async function renderRanking(weekIdx) {
   const posColors = { 1: '#c9a84c', 2: '#aaa', 3: '#cd7f32' };
 
   document.getElementById('ranking-list').innerHTML = allOps.map((op, i) => {
-    const pos   = i + 1;
+    const pos = i + 1;
     const color = posColors[pos] || 'rgba(201,168,76,.4)';
     return `
       <div class="ranking-row">
@@ -597,11 +620,13 @@ async function renderRanking(weekIdx) {
           <span class="ranking-mobile-label">Факультет</span>
           ${renderCrest(op.fac, 'ranking-crest-img')} ${escapeHtml(op.fac.name)}
         </div>
-
+        <div class="ranking-pts ${op.fac.scoreCls}">
+          <span class="ranking-mobile-label">Баллы</span>
+          <strong>${fmtPts(op.pts)}</strong>
+        </div>
       </div>`;
   }).join('');
 }
-
 /* ── Editor ───────────────────────────────────────────────── */
 async function refreshDashboard() {
   await Promise.all([
