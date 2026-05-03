@@ -150,6 +150,23 @@ function getScoreMetricIndex() {
   return idx === -1 ? METRICS.length - 1 : idx;
 }
 
+function getPublicMetrics() {
+  return METRICS
+    .map((metric, index) => ({ metric, index }))
+    .filter(item => item.metric.type !== 'score');
+}
+
+function resetAllOperatorScores() {
+  const scoreIdx = getScoreMetricIndex();
+  WEEKLY_DATA.forEach(week => {
+    week.forEach(facultyRows => {
+      facultyRows.forEach(row => {
+        row[scoreIdx] = 0;
+      });
+    });
+  });
+}
+
 function normalizeEditableData() {
   const metricCount = METRICS.length;
 
@@ -206,12 +223,14 @@ async function loadEditableData() {
   }
 
   // 2. Фолбэк: локальный кэш (localStorage)
+  let loadedFromCache = false;
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
     if (saved && Array.isArray(saved.faculties) && Array.isArray(saved.weeklyData) && Array.isArray(saved.metrics)) {
       FACULTIES   = saved.faculties;
       WEEKLY_DATA = saved.weeklyData;
       METRICS     = saved.metrics;
+      loadedFromCache = true;
       console.warn('⚠️ Используются кэшированные данные (сервер недоступен)');
     }
   } catch (err) {
@@ -220,6 +239,10 @@ async function loadEditableData() {
 
   if (!METRICS.some(m => m.type === 'score')) METRICS.push({ label: 'Баллы', type: 'score' });
   normalizeEditableData();
+
+  if (!loadedFromCache) {
+    resetAllOperatorScores();
+  }
 }
 
 async function saveEditableData() {
@@ -455,11 +478,11 @@ async function renderScoreboard(weekIdx) {
 async function renderFacultyCards(weekIdx) {
   const grid = document.getElementById('faculty-grid');
   const allTotals = await fetchScores(weekIdx);
-  const maxPts = Math.max(1, ...allTotals.flat().map(o => o.pts));
+  const publicMetrics = getPublicMetrics();
 
   const colHeaders = weekIdx < 4
-    ? METRICS.map(metric => `<th class="metric-col metric-${metric.type}">${escapeHtml(metric.label)}</th>`).join('')
-    : '<th>Баллы (итого)</th>';
+    ? publicMetrics.map(({ metric }) => `<th class="metric-col metric-${metric.type}">${escapeHtml(metric.label)}</th>`).join('')
+    : '';
 
   let html = '';
 
@@ -471,26 +494,12 @@ async function renderFacultyCards(weekIdx) {
 
     const rows = sorted.map(op => {
       const globalRank = allFlat.findIndex(r => r.name === op.name) + 1;
-      const pct = Math.round((op.pts / maxPts) * 100);
-
       let metricCells = '';
       if (weekIdx < 4) {
         const origIdx = fac.operators.indexOf(op.name);
         const row = WEEKLY_DATA[weekIdx][fi][origIdx];
-        metricCells = METRICS.map((metric, i) => {
-          const value = row[i] ?? 0;
-          if (metric.type === 'score') {
-            return `
-              <td class="metric-score-cell">
-                <div class="score-bar-wrap">
-                  <div class="score-bar">
-                    <div class="score-bar-fill" style="width:${pct}%"></div>
-                  </div>
-                  <span class="pts-value">${fmtPts(op.pts)}</span>
-                </div>
-              </td>`;
-          }
-
+        metricCells = publicMetrics.map(({ metric, index }) => {
+          const value = row[index] ?? 0;
           const cls = metric.type === 'penalty' && Number(value) > 0 ? ' class="neg"' : '';
           return `<td${cls}>${formatMetricValue(value, metric)}</td>`;
         }).join('');
@@ -500,18 +509,9 @@ async function renderFacultyCards(weekIdx) {
         <tr>
           <td class="${op.name.length <= 12 ? 'short-text' : ''}">${buildRankBadge(globalRank)}${escapeHtml(op.name)}</td>
           ${metricCells}
-          ${weekIdx < 4 ? '' : `<td>
-            <div class="score-bar-wrap">
-              <div class="score-bar">
-                <div class="score-bar-fill" style="width:${pct}%"></div>
-              </div>
-              <span class="pts-value">${fmtPts(op.pts)}</span>
-            </div>
-          </td>`}
+
         </tr>`;
     }).join('');
-
-    const colspan = weekIdx < 4 ? METRICS.length : 1;
 
     html += `
       <div class="faculty-card ${fac.cls}">
@@ -568,10 +568,7 @@ async function renderRanking(weekIdx) {
           <span class="ranking-mobile-label">Факультет</span>
           ${renderCrest(op.fac, 'ranking-crest-img')} ${escapeHtml(op.fac.name)}
         </div>
-        <div class="ranking-pts ${op.fac.scoreCls}">
-          <span class="ranking-mobile-label">Баллы</span>
-          <strong>${fmtPts(op.pts)}</strong>
-        </div>
+
       </div>`;
   }).join('');
 }
