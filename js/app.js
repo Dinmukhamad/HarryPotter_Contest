@@ -21,7 +21,7 @@ const USE_MOCK = false;
    Локально:    'http://localhost:3000'
    На сервере:  'https://your-app.railway.app'  (и т.п.)
    -------------------------------------------------------- */
-const API_BASE = 'http://localhost:3000';
+const API_BASE = 'https://harrypotter-contest-production.up.railway.app';
 
 const HOUSE_CRESTS = {
   gryf: 'assets/crest-gryffindor.png',
