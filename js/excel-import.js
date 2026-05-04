@@ -13,33 +13,63 @@
 
 'use strict';
 
-/* ── Сопоставление заголовков Excel → индекс метрики ──────
-   Порядок метрик в METRICS / WEEKLY_DATA:
-   0:КЗЧ  1:QA  2:CSat  3:Эфф%  4:Часы%  5:Нар.  6:Опозд.  7:Баллы
-   ---------------------------------------------------------- */
-const EXCEL_COL_MAP = {
-  // Различные варианты написания → индекс в массиве метрик
-  'квз':                            0,
-  'кзч':                            0,
-  'кво':                            0,
-  'qa':                             1,
-  'csat':                           2,
-  'ccat':                           2,
-  'csат':                           2,
-  'эффективность':                  3,
-  'эфф%':                           3,
-  'эфф':                            3,
-  'часы':                           4,
-  'часы%':                          4,
-  'опоздания':                      6,
-  'опозд.':                         6,
-  'опозд':                          6,
-  'просмотр посторонних сайтов':    5,
-  'нар.':                           5,
-  'нар':                            5,
-  'нарушения':                      5,
-  'баллы':                          7,  // необязательный
+/* ── Сопоставление заголовков Excel → канонические имена метрик ──
+   Ключи — варианты написания заголовков в Excel.
+   Значения — канонические ключи, по которым ищется индекс в METRICS.
+   Это позволяет корректно находить метрику даже если её порядок
+   в METRICS изменился (добавили/удалили колонки через редактор).
+   ---------------------------------------------------------------- */
+const EXCEL_COL_CANONICAL = {
+  'квз':                            'кзч',
+  'кзч':                            'кзч',
+  'кво':                            'кзч',
+  'qa':                             'qa',
+  'csat':                           'csat',
+  'ccat':                           'csat',
+  'csат':                           'csat',
+  'эффективность':                  'эфф%',
+  'эфф%':                           'эфф%',
+  'эфф':                            'эфф%',
+  'часы':                           'часы%',
+  'часы%':                          'часы%',
+  'опоздания':                      'опозд.',
+  'опозд.':                         'опозд.',
+  'опозд':                          'опозд.',
+  'просмотр посторонних сайтов':    'нар.',
+  'нар.':                           'нар.',
+  'нар':                            'нар.',
+  'нарушения':                      'нар.',
+  'баллы':                          '__score__',  // необязательный
 };
+
+/* Строит карту: канонический ключ → индекс в METRICS (вычисляется в рантайме) */
+function buildCanonicalToMetricIndex() {
+  const map = {};
+  METRICS.forEach((metric, idx) => {
+    const key = norm(metric.label);
+    map[key] = idx;
+  });
+  // явная пометка для колонки «Баллы»
+  const scoreIdx = getScoreMetricIndex();
+  map['__score__'] = scoreIdx;
+  return map;
+}
+
+/* Возвращает карту: колонка Excel → индекс в METRICS */
+function buildExcelColMap(headerRow) {
+  const canonicalToIdx = buildCanonicalToMetricIndex();
+  const result = {}; // colIdx → metricIdx
+
+  headerRow.forEach((h, colIdx) => {
+    const canonical = EXCEL_COL_CANONICAL[h];
+    if (canonical === undefined) return;
+    const metricIdx = canonicalToIdx[canonical];
+    if (metricIdx !== undefined) {
+      result[colIdx] = metricIdx;
+    }
+  });
+  return result;
+}
 
 /* Сопоставление названий факультетов в Excel → id в FACULTIES */
 const FACULTY_NAME_MAP = {
@@ -66,13 +96,28 @@ function toNum(v) {
 }
 
 function calculateImportedScore(values) {
-  const kzch = Number(values[0]) || 0;
-  const qa = Number(values[1]) || 0;
-  const csat = Number(values[2]) || 0;
-  const efficiency = Number(values[3]) || 0;
-  const hours = Number(values[4]) || 0;
-  const violations = Math.abs(Number(values[5]) || 0);
-  const late = Math.abs(Number(values[6]) || 0);
+  // Динамически находим индексы метрик по их меткам в METRICS
+  function findIdx(canonical) {
+    return METRICS.findIndex(m => norm(m.label) === canonical);
+  }
+
+  const idxKzch       = findIdx('кзч');
+  const idxQa         = findIdx('qa');
+  const idxCsat       = findIdx('csat');
+  const idxEff        = findIdx('эфф%');
+  const idxHours      = findIdx('часы%');
+  const idxViolations = findIdx('нар.');
+  const idxLate       = findIdx('опозд.');
+
+  const get = (idx) => (idx !== -1 ? (Number(values[idx]) || 0) : 0);
+
+  const kzch       = get(idxKzch);
+  const qa         = get(idxQa);
+  const csat       = get(idxCsat);
+  const efficiency = get(idxEff);
+  const hours      = get(idxHours);
+  const violations = Math.abs(get(idxViolations));
+  const late       = Math.abs(get(idxLate));
 
   const score = (kzch * 10) + (qa * 2) + (csat * 40) + (efficiency * 3) + (hours * 2) - (violations * 30) - (late * 5);
   return Math.max(0, Math.round(score * 10) / 10);
@@ -129,15 +174,13 @@ function parseExcelAndApply(file, weekIndex) {
         return;
       }
 
-      /* Метрические колонки: заголовок → индекс метрики */
-      const metricColIndexes = {}; // колонка в Excel → индекс в METRICS
-      headerRow.forEach((h, colIdx) => {
-        if (colIdx === colFaculty || colIdx === colOperator) return;
-        const metricIdx = EXCEL_COL_MAP[h];
-        if (metricIdx !== undefined) {
-          metricColIndexes[colIdx] = metricIdx;
-        }
-      });
+      /* Метрические колонки: заголовок → индекс метрики
+         Используем динамическую карту, которая строится на основе
+         актуального состояния METRICS (а не захардкоженных позиций). */
+      const metricColIndexes = buildExcelColMap(headerRow);
+      // Исключаем служебные колонки факультета и оператора
+      delete metricColIndexes[colFaculty];
+      delete metricColIndexes[colOperator];
 
       if (Object.keys(metricColIndexes).length === 0) {
         setImportStatus('Не найдено ни одной метрической колонки.', 'error');
