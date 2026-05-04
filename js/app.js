@@ -542,9 +542,12 @@ function renderEditor() {
       <div class="editor-faculty ${fac.cls}">
         <div class="editor-faculty-header">
           <div class="editor-faculty-name">${escapeHtml(fac.name)}</div>
-          <div class="editor-add-operator">
-            <input class="editor-input" id="new-operator-${fi}" placeholder="Новый оператор">
-            <button class="editor-btn" onclick="addOperator(${fi})">Добавить</button>
+          <div class="editor-faculty-actions">
+            <button class="editor-btn danger-soft" onclick="clearFacultyMetrics(${fi})">Очистить группу</button>
+            <div class="editor-add-operator">
+              <input class="editor-input" id="new-operator-${fi}" placeholder="Новый оператор">
+              <button class="editor-btn" onclick="addOperator(${fi})">Добавить</button>
+            </div>
           </div>
         </div>
         <div class="editor-table-wrap">
@@ -639,6 +642,23 @@ async function clearOperatorMetrics(facIdx, opIdx) {
 
 async function removeOperator(facIdx, opIdx) {
   await clearOperatorMetrics(facIdx, opIdx);
+}
+async function clearFacultyMetrics(facIdx) {
+  if (!requireAdmin()) return;
+  const fac = FACULTIES[facIdx];
+  if (!fac) return;
+  if (!confirm(`Очистить все показатели всех операторов группы "${fac.name}" за 4 недели? Имена операторов останутся.`)) return;
+
+  WEEKLY_DATA.forEach(week => {
+    if (!week[facIdx]) return;
+    fac.operators.forEach((_, opIdx) => {
+      week[facIdx][opIdx] = Array(METRICS.length).fill(0);
+    });
+  });
+
+  await saveEditableData();
+  renderEditor();
+  refreshDashboard();
 }
 async function updateMetricLabel(metricIdx, value) {
   if (!requireAdmin()) return;
