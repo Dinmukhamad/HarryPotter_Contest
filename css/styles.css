@@ -2026,3 +2026,22 @@ table.operators tbody tr:hover {
   border: 1px solid rgba(148,107,45,.4);
   color: rgba(244,232,193,.7);
 }
+
+.editor-faculty-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.editor-btn.danger-soft {
+  border-color: rgba(185, 56, 56, .48);
+  color: #f4d1c9;
+  background: rgba(120, 24, 24, .28);
+}
+
+.editor-btn.danger-soft:hover {
+  border-color: rgba(230, 92, 72, .72);
+  background: rgba(150, 34, 30, .42);
+}
