@@ -27,7 +27,6 @@ const HOUSE_CRESTS = {
   gryf: 'assets/crest-gryffindor.png',
   slyth: 'assets/crest-slytherin.png',
   huff: 'assets/crest-hufflepuff.png',
-  raven: 'assets/crest-ravenclaw.png',
 };
 
 /* ============================================================
@@ -41,7 +40,6 @@ let FACULTIES = [
   { id: 'gryf',  cls: 'gryf',  icon: '🦁', crest: HOUSE_CRESTS.gryf,  name: 'Гриффиндор', tagCls: 'tag-gryf',  scoreCls: 'gryf-score',  operators: [] },
   { id: 'slyth', cls: 'slyth', icon: '🐍', crest: HOUSE_CRESTS.slyth, name: 'Слизерин',   tagCls: 'tag-slyth', scoreCls: 'slyth-score', operators: [] },
   { id: 'huff',  cls: 'huff',  icon: '🦡', crest: HOUSE_CRESTS.huff,  name: 'Пуффендуй',  tagCls: 'tag-huff',  scoreCls: 'huff-score',  operators: [] },
-  { id: 'raven', cls: 'raven', icon: '🦅', crest: HOUSE_CRESTS.raven, name: 'Когтевран',   tagCls: 'tag-raven', scoreCls: 'raven-score', operators: [] },
 ];
 
 /* Weekly data: [week][faculty][operator] → [...метрики, Баллы]
