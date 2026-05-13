@@ -442,63 +442,11 @@ async function renderFacultyCards(weekIdx) {
 
   grid.innerHTML = html;
 }
-/* ── Overall Ranking ────────────────────────────────────────── */
-async function renderRanking(weekIdx) {
-  const allTotals = await fetchScores(weekIdx);
-  const posColors = { 1: '#c9a84c', 2: '#aaa', 3: '#cd7f32' };
-
-  const cards = FACULTIES.map((fac, fi) => {
-    const operators = allTotals[fi]
-      .map(op => ({ ...op }))
-      .sort((a, b) => b.pts - a.pts);
-
-    const rows = operators.map((op, i) => {
-      const pos = i + 1;
-      const color = posColors[pos] || 'rgba(201,168,76,.62)';
-      return `
-        <tr>
-          <td class="ranking-place"><span style="color:${color}">#${pos}</span></td>
-          <td class="ranking-operator-name">${escapeHtml(op.name)}</td>
-          <td class="ranking-points-cell">
-            <span class="ranking-pts ${fac.scoreCls}"><strong>${fmtPts(op.pts)}</strong></span>
-          </td>
-        </tr>`;
-    }).join('');
-
-    return `
-      <div class="ranking-faculty-card faculty-card ${fac.cls}">
-        <div class="faculty-header ranking-faculty-header">
-          <div class="faculty-header-left">
-            <div class="faculty-crest">${renderCrest(fac)}</div>
-            <div>
-              <div class="faculty-name">${escapeHtml(fac.name)}</div>
-              <div class="ranking-card-caption">${getPeriodLabel(weekIdx)}</div>
-            </div>
-          </div>
-        </div>
-        <div class="ranking-table-wrap">
-          <table class="operators ranking-table ranking-faculty-table">
-            <thead>
-              <tr>
-                <th>Место</th>
-                <th>Оператор</th>
-                <th>Баллы</th>
-              </tr>
-            </thead>
-            <tbody>${rows}</tbody>
-          </table>
-        </div>
-      </div>`;
-  }).join('');
-
-  document.getElementById('ranking-list').innerHTML = `<div class="ranking-faculty-grid">${cards}</div>`;
-}
 /* ── Editor ───────────────────────────────────────────────── */
 async function refreshDashboard() {
   await Promise.all([
     renderScoreboard(currentWeek),
     renderFacultyCards(currentWeek),
-    renderRanking(currentWeek),
   ]);
 }
 
@@ -732,25 +680,22 @@ async function removeMetric(metricIdx) {
 /* ============================================================
    NAVIGATION
    ============================================================ */
-let currentWeek = 4;
-let currentView = 'rating';
+let currentWeek = 0;
+let currentView = 'week';
 
 function setActiveTab(view, weekIdx = null) {
   document.querySelectorAll('.week-tab').forEach(tab => {
-    const isRating = view === 'rating' && tab.dataset.view === 'rating';
     const isWeek = view === 'week' && tab.dataset.week === String(weekIdx);
-    tab.classList.toggle('active', isRating || isWeek);
+    tab.classList.toggle('active', isWeek);
   });
 }
 
 function setDashboardMode(view) {
   currentView = view;
-  const ratingOnly = view === 'rating';
   const sections = [
-    ['editor-panel', !ratingOnly && isAdmin],
-    ['scoreboard', !ratingOnly],
-    ['ranking-list', true],
-    ['faculty-grid', !ratingOnly],
+    ['editor-panel', isAdmin],
+    ['scoreboard', true],
+    ['faculty-grid', true],
   ];
 
   sections.forEach(([id, visible]) => {
@@ -758,15 +703,9 @@ function setDashboardMode(view) {
     if (el) el.hidden = !visible;
   });
 
-  document.querySelectorAll('.details-intro, .operator-ranking-section').forEach(el => {
-    el.hidden = ratingOnly ? !el.classList.contains('operator-ranking-section') : el.classList.contains('operator-ranking-section');
+  document.querySelectorAll('.details-intro').forEach(el => {
+    el.hidden = false;
   });
-}
-
-async function showRating() {
-  setDashboardMode('rating');
-  setActiveTab('rating');
-  await renderRanking(4);
 }
 
 async function showWeek(idx) {
@@ -802,9 +741,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   loadAdminSession();
   updateAdminGate();
   renderEditor();
-  renderScoreboard(4);
-  renderFacultyCards(4);
-  showRating();
+  showWeek(0);
 });
 
 document.addEventListener('keydown', event => {
