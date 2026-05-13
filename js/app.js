@@ -451,30 +451,39 @@ async function renderRanking(weekIdx) {
   ).sort((a, b) => b.pts - a.pts);
 
   const posColors = { 1: '#c9a84c', 2: '#aaa', 3: '#cd7f32' };
-
-  document.getElementById('ranking-list').innerHTML = allOps.map((op, i) => {
+  const rows = allOps.map((op, i) => {
     const pos = i + 1;
-    const color = posColors[pos] || 'rgba(201,168,76,.4)';
+    const color = posColors[pos] || 'rgba(201,168,76,.62)';
     return `
-      <div class="ranking-row">
-        <div class="ranking-pos" style="color:${color}">
-          <span class="ranking-mobile-label">Место</span>
-          ${pos}
-        </div>
-        <div class="ranking-name">
-          <span class="ranking-mobile-label">Оператор</span>
-          ${escapeHtml(op.name)}
-        </div>
-        <div class="ranking-faculty-tag ${op.fac.tagCls}">
-          <span class="ranking-mobile-label">Факультет</span>
-          ${renderCrest(op.fac, 'ranking-crest-img')} ${escapeHtml(op.fac.name)}
-        </div>
-        <div class="ranking-pts ${op.fac.scoreCls}">
-          <span class="ranking-mobile-label">Баллы</span>
-          <strong>${fmtPts(op.pts)}</strong>
-        </div>
-      </div>`;
+      <tr>
+        <td class="ranking-place"><span style="color:${color}">#${pos}</span></td>
+        <td class="ranking-operator-name">${escapeHtml(op.name)}</td>
+        <td class="ranking-faculty-cell">
+          <span class="ranking-faculty-tag ${op.fac.tagCls}">
+            ${renderCrest(op.fac, 'ranking-crest-img')}
+            <span>${escapeHtml(op.fac.name)}</span>
+          </span>
+        </td>
+        <td class="ranking-points-cell">
+          <span class="ranking-pts ${op.fac.scoreCls}"><strong>${fmtPts(op.pts)}</strong></span>
+        </td>
+      </tr>`;
   }).join('');
+
+  document.getElementById('ranking-list').innerHTML = `
+    <div class="ranking-table-wrap">
+      <table class="operators ranking-table">
+        <thead>
+          <tr>
+            <th>Место</th>
+            <th>Оператор</th>
+            <th>Факультет</th>
+            <th>Баллы</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
 }
 /* ── Editor ───────────────────────────────────────────────── */
 async function refreshDashboard() {
