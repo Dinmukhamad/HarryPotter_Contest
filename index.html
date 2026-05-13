@@ -9,7 +9,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon-180.png?v=crest-favicon-1">
 
   <!-- Styles -->
-  <link rel="stylesheet" href="css/styles.css?v=three-groups-layout-1">
+  <link rel="stylesheet" href="css/styles.css?v=rating-table-1">
 
   <!--
     Когда будет готов FastAPI бэкенд:
@@ -289,13 +289,6 @@
           <strong>Как читать таблицу:</strong> место считается по итоговым баллам за месяц. Смотри позицию, факультет и итоговые баллы.
         </div>
       </div>
-      <div class="ranking-table-head" aria-hidden="true">
-        <span>Место</span>
-        <span>Оператор</span>
-        <span>Факультет</span>
-        <span>Баллы</span>
-        
-      </div>
       <div class="ranking-list" id="ranking-list">
         <!-- заполняется из app.js → renderRanking() -->
       </div>
@@ -307,7 +300,7 @@
         <div class="section-kicker">Командные таблицы</div>
         <h2 class="section-title">Баллы операторов по факультетам</h2>
       </div>
-      <p class="section-help">Сверху идут первые две команды, ниже третья и четвёртая. Внутри каждой таблицы операторы идут по списку команды, а баллы видны в последней колонке.</p>
+      <p class="section-help">Сверху идут первые две команды, ниже третья. Внутри каждой таблицы операторы идут по списку команды, а баллы видны в последней колонке.</p>
     </section>
     <section class="faculties-grid" id="faculty-grid" aria-label="Факультеты">
       <!-- заполняется из app.js → renderFacultyCards() -->
@@ -370,7 +363,7 @@
   <!-- App (подключить последним) -->
   <!-- SheetJS — парсинг Excel в браузере -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script src="js/app.js?v=three-supervisor-groups-1"></script>
+  <script src="js/app.js?v=rating-table-1"></script>
   <script src="js/excel-import.js?v=excel-penalty-score-fix-1"></script>
 
 </body>
