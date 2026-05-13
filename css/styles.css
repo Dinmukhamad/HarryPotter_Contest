@@ -2063,3 +2063,149 @@ table.operators tbody tr:hover {
   border-color: rgba(230, 92, 72, .72);
   background: rgba(150, 34, 30, .42);
 }
+/* ── Rating Table View ─────────────────────────────────────── */
+.ranking-table-head {
+  display: none;
+}
+
+.ranking-list {
+  display: block;
+  padding: 0;
+}
+
+.ranking-table-wrap {
+  max-height: min(72vh, 760px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(201,168,76,.74) rgba(18,13,25,.7);
+}
+
+.ranking-table-wrap::-webkit-scrollbar {
+  width: 8px;
+}
+
+.ranking-table-wrap::-webkit-scrollbar-track {
+  background: rgba(18,13,25,.72);
+}
+
+.ranking-table-wrap::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(201,168,76,.92), rgba(122,82,30,.78));
+  border-radius: 8px;
+}
+
+table.ranking-table {
+  table-layout: fixed;
+}
+
+table.ranking-table th:first-child,
+table.ranking-table td:first-child {
+  width: 82px;
+  padding-left: 4px;
+  text-align: center;
+}
+
+table.ranking-table th:nth-child(2),
+table.ranking-table td:nth-child(2) {
+  width: auto;
+}
+
+table.ranking-table th:nth-child(3),
+table.ranking-table td:nth-child(3) {
+  width: 230px;
+}
+
+table.ranking-table th:nth-child(4),
+table.ranking-table td:nth-child(4) {
+  width: 128px;
+}
+
+.ranking-place span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  font-family: 'Cinzel', serif;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.ranking-operator-name {
+  text-align: left !important;
+  padding-left: 12px !important;
+  font-weight: 700;
+  color: rgba(244,232,193,.94) !important;
+}
+
+.ranking-faculty-cell {
+  text-align: center;
+}
+
+.ranking-faculty-cell .ranking-faculty-tag {
+  min-width: 154px;
+}
+
+.ranking-points-cell {
+  text-align: center;
+}
+
+.ranking-points-cell .ranking-pts {
+  display: inline-flex;
+  min-width: 82px;
+  min-height: 32px;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 10px;
+}
+
+.ranking-points-cell .ranking-pts strong {
+  font-size: 18px;
+}
+
+@media (max-width: 640px) {
+  .ranking-table-wrap {
+    max-height: 68vh;
+  }
+
+  table.ranking-table {
+    font-size: 11px;
+  }
+
+  table.ranking-table th:first-child,
+  table.ranking-table td:first-child {
+    width: 48px;
+  }
+
+  table.ranking-table th:nth-child(3),
+  table.ranking-table td:nth-child(3) {
+    width: 118px;
+  }
+
+  table.ranking-table th:nth-child(4),
+  table.ranking-table td:nth-child(4) {
+    width: 70px;
+  }
+
+  .ranking-faculty-cell .ranking-faculty-tag {
+    min-width: 0;
+    width: 100%;
+    gap: 4px;
+    padding: 5px 4px;
+    font-size: 10px;
+    letter-spacing: .03em;
+  }
+
+  .ranking-crest-img {
+    width: 18px;
+    height: 18px;
+  }
+
+  .ranking-points-cell .ranking-pts {
+    min-width: 54px;
+    padding: 4px 6px;
+  }
+
+  .ranking-points-cell .ranking-pts strong {
+    font-size: 15px;
+  }
+}
