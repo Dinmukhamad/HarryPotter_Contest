@@ -49,6 +49,10 @@ app.get('/api/health', (req, res) => {
   res.json({ ok: true, dataFile: DATA_FILE, time: new Date().toISOString() });
 });
 
+app.post('/api/admin/verify', requireAdmin, (req, res) => {
+  res.json({ ok: true });
+});
+
 app.get('/api/state', (req, res) => {
   res.json({ state: readState() });
 });
