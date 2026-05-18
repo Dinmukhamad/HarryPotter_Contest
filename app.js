@@ -48,7 +48,21 @@ let FACULTIES = [
 let WEEKLY_DATA = [ [], [], [], [] ];
 
 
-const COLS = ['КЗЧ', 'QA', 'CSat', 'Эфф%', 'Часы%', 'Нар.', 'Опозд.', 'Баллы'];
+/* Метрики соответствуют колонкам Excel «Таблица_для_конкурса.xlsx»:
+   - 5 обычных показателей (количество звонков, оценка, выработка, эффективность)
+   - 2 штрафа (опоздания в минутах, посторонние сайты — факты)
+   - 1 итоговый балл (приходит из Excel, не вычисляется на сайте)
+   Порядок в массиве задаёт порядок колонок в таблицах. */
+const DEFAULT_METRICS = [
+  { label: 'Качество',     type: 'metric'  },  // 0: значение качества (например 97.5)
+  { label: 'Оценка',       type: 'metric'  },  // 1: оценка клиента (например 4.82)
+  { label: 'Выработка %',  type: 'metric'  },  // 2: % выработки
+  { label: 'Эфф. %',       type: 'metric'  },  // 3: эффективность %
+  { label: 'Опозд. (мин)', type: 'penalty' },  // 4: минуты опозданий
+  { label: 'Сайты',        type: 'penalty' },  // 5: факты посещения посторонних сайтов
+  { label: 'Итого',        type: 'score'   },  // 6: итоговый балл из Excel
+];
+
 const ADMIN_SESSION_KEY = 'hpContestAdminUnlocked';
 const ADMIN_PASSWORD_KEY = 'hpContestAdminToken';
 let isAdmin = false;
@@ -59,10 +73,8 @@ let isAdmin = false;
 function getAdminPassword() {
   return sessionStorage.getItem(ADMIN_PASSWORD_KEY) || '';
 }
-let METRICS = COLS.map((label, idx) => ({
-  label,
-  type: idx === COLS.length - 1 ? 'score' : (idx === 5 || idx === 6 ? 'penalty' : 'metric'),
-}));
+
+let METRICS = DEFAULT_METRICS.map(m => ({ ...m }));
 
 function cloneData(value) {
   return JSON.parse(JSON.stringify(value));
@@ -439,15 +451,25 @@ function calcTotals(weekIdx) {
 
 function getFacultyTotal(facIdx, weekIdx) {
   const scoreIdx = getScoreMetricIndex();
-  if (weekIdx < 4) {
-    return WEEKLY_DATA[weekIdx][facIdx].reduce((s, r) => s + (Number(r[scoreIdx]) || 0), 0);
+
+  /* Среднее ИТОГО по факультету.
+     Учитываются только операторы с ненулевым баллом — пустые строки
+     (например, оператор не работал в эту неделю) не размывают среднее. */
+  function avgForWeek(w) {
+    const rows = WEEKLY_DATA[w] && WEEKLY_DATA[w][facIdx] ? WEEKLY_DATA[w][facIdx] : [];
+    const scores = rows
+      .map(r => Number(r[scoreIdx]) || 0)
+      .filter(v => v !== 0);
+    if (scores.length === 0) return 0;
+    return scores.reduce((s, v) => s + v, 0) / scores.length;
   }
 
-  const operatorCount = Math.max(1, FACULTIES[facIdx].operators.length);
-  const monthlyTotal = [0,1,2,3].reduce((sum, w) =>
-    sum + WEEKLY_DATA[w][facIdx].reduce((s, r) => s + (Number(r[scoreIdx]) || 0), 0), 0
-  );
-  return monthlyTotal / operatorCount;
+  if (weekIdx < 4) return avgForWeek(weekIdx);
+
+  /* Итоги месяца — среднее недельных средних по тем неделям, где есть данные. */
+  const weeklyAverages = [0, 1, 2, 3].map(avgForWeek).filter(v => v !== 0);
+  if (weeklyAverages.length === 0) return 0;
+  return weeklyAverages.reduce((s, v) => s + v, 0) / weeklyAverages.length;
 }
 
 /* ============================================================
@@ -488,7 +510,7 @@ async function renderScoreboard(weekIdx) {
         <span>${fac.name}</span>
       </div>
       <div class="score-points ${fac.scoreCls}">${fmtPts(fac.total)}</div>
-      <div class="score-caption">${isMonthTotal ? 'средний балл' : 'баллов'}</div>
+      <div class="score-caption">средний балл</div>
     </div>
   `).join('');
 
@@ -574,7 +596,7 @@ async function renderFacultyCards(weekIdx) {
           </div>
           <div>
             <div class="faculty-total">${fmtPts(facTotal)}</div>
-            <div class="faculty-total-label">${weekIdx === 4 ? 'средний балл' : 'очков'}</div>
+            <div class="faculty-total-label">средний балл</div>
           </div>
         </div>
         <div class="faculty-table-wrap">
