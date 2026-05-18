@@ -68,20 +68,28 @@ app.post('/api/state', requireAdmin, (req, res) => {
   res.json({ ok: true });
 });
 
-const cacheOptions = { maxAge: '1h', index: false, dotfiles: 'deny' };
-app.use('/assets', express.static(path.join(__dirname, 'assets'), cacheOptions));
-app.use('/css', express.static(path.join(__dirname, 'css'), cacheOptions));
-app.use('/js', express.static(path.join(__dirname, 'js'), cacheOptions));
+/* JS и CSS — без кэша (версионируются через ?v=… в index.html).
+   Картинки — кэш на час: они меняются редко. */
+const codeNoCache = { maxAge: 0, etag: true, index: false, dotfiles: 'deny' };
+const assetCache  = { maxAge: '1h', index: false, dotfiles: 'deny' };
+app.use('/assets', express.static(path.join(__dirname, 'assets'), assetCache));
+app.use('/css', express.static(path.join(__dirname, 'css'), codeNoCache));
+app.use('/js', express.static(path.join(__dirname, 'js'), codeNoCache));
 
-app.get('/', (req, res) => {
+/* Сам index.html тоже не кэшируем — он определяет, какие версии скриптов
+   браузер загрузит, поэтому всегда должен быть свежим. */
+function sendIndex(req, res) {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
   res.sendFile(path.join(__dirname, 'index.html'));
-});
+}
+
+app.get('/', sendIndex);
 
 app.get('*', (req, res) => {
   if (req.path.startsWith('/api/')) {
     return res.status(404).json({ error: 'Not found' });
   }
-  res.sendFile(path.join(__dirname, 'index.html'));
+  sendIndex(req, res);
 });
 
 app.listen(PORT, () => {
