@@ -6,21 +6,15 @@
  * используется — итоговый балл берётся напрямую из Excel (колонка
  * «ИТОГО БАЛЛОВ»).
  *
- * Ожидаемая структура файла:
- *   Строка 1: «ОТЧЁТ ПО ПОКАЗАТЕЛЯМ ОПЕРАТОРОВ …» (любой заголовок)
- *   Строка 2: основная шапка (категории)
- *   Строка 3: подзаголовки (Значение / Баллы / Минуты и т.п.)
- *   Строка 4..N: данные операторов
+ * Колонки определяются автоматически по заголовку — порядок и
+ * количество колонок может меняться, главное чтобы названия
+ * содержали ключевые слова: «оператор», «качество», «оценка»,
+ * «выработка», «эффективность», «опоздания», «посторонние»/«сайты»,
+ * «итого».
  *
- * Колонки данных (1-индексированные как в Excel):
- *   B = имя оператора
- *   C = КАЧЕСТВО (значение)
- *   E = ОЦЕНКА КЛИЕНТА (значение)
- *   G = ВЫРАБОТКА % (значение)
- *   I = ЭФФЕКТИВНОСТЬ % (значение)
- *   K = ОПОЗДАНИЯ (минуты)
- *   M = ПОСТОРОННИЕ САЙТЫ (факты)
- *   N = ИТОГО БАЛЛОВ
+ * Поддерживаются обе структуры файла:
+ *   - старая (без колонки «Факультет»): A=№, B=Оператор, C=Качество…
+ *   - новая (с колонкой «Факультет»):   A=№, B=Факультет, C=Оператор, D=Качество…
  *
  * Привязка имени к факультету:
  *   - Имя из Excel ищется в operators всех факультетов в data.json
@@ -31,27 +25,6 @@
  */
 
 'use strict';
-
-/* ── Структура колонок Excel (0-индексированно) ─────────────
-   Соответствует фиксированному формату «Таблица_для_конкурса.xlsx».
-   Изменение порядка/количества колонок в Excel потребует правки этих
-   констант. */
-const EXCEL_LAYOUT = {
-  nameCol:    1,   // B — ФИО оператора
-  metricCols: [
-    { excelCol: 2,  metricIdx: 0 },  // C → Качество
-    { excelCol: 4,  metricIdx: 1 },  // E → Оценка
-    { excelCol: 6,  metricIdx: 2 },  // G → Выработка %
-    { excelCol: 8,  metricIdx: 3 },  // I → Эфф. %
-    { excelCol: 10, metricIdx: 4 },  // K → Опозд. (мин)
-    { excelCol: 12, metricIdx: 5 },  // M → Сайты
-  ],
-  scoreCol:   13,  // N — ИТОГО БАЛЛОВ
-  /* Заголовочные строки, которые пропускаются при парсинге.
-     Парсер ищет первую строку, где колонка B содержит непустое имя
-     и колонка A (№) — число. */
-  firstDataRowMin: 3, // данные начинаются не раньше 4-й строки Excel (индекс 3)
-};
 
 /* ── Утилиты ─────────────────────────────────────────────── */
 function norm(str) {
@@ -94,6 +67,98 @@ function setImportStatus(msg, type = 'info') {
   el.removeAttribute('hidden');
 }
 
+/* ── Автоопределение колонок по заголовку ─────────────────
+   Принимает массив строк из листа (rows). Ищет строку, содержащую
+   слово «оператор» в одной из ячеек (это шапка категорий). От этой
+   строки также берёт колонки метрик. Если в найденной строке нет
+   подзаголовков «Значение/Баллы», предполагает что подзаголовки
+   находятся в строке ниже.
+
+   Возвращает объект:
+   {
+     nameCol:   индекс колонки с ФИО оператора,
+     metricCols: [{ excelCol, metricIdx }],
+     scoreCol:  индекс колонки «ИТОГО БАЛЛОВ»,
+     headerRow: индекс строки заголовка,
+     dataStartRow: индекс первой строки данных
+   }
+   или null, если разобрать не удалось. */
+function detectLayout(rows) {
+  /* 1. Ищем строку, где есть «оператор» */
+  let headerRow = -1;
+  let operatorCol = -1;
+  for (let r = 0; r < Math.min(rows.length, 6); r++) {
+    const row = rows[r] || [];
+    for (let c = 0; c < row.length; c++) {
+      if (norm(row[c]) === 'оператор' || norm(row[c]) === 'фио' || norm(row[c]) === 'фио оператора') {
+        headerRow = r;
+        operatorCol = c;
+        break;
+      }
+    }
+    if (headerRow >= 0) break;
+  }
+  if (headerRow < 0) return null;
+
+  /* 2. Карта ключевых слов → метрика. Порядок в массиве соответствует
+        индексам метрик на сайте: 0=качество, 1=оценка, 2=выработка,
+        3=эффективность, 4=опоздания, 5=сайты. */
+  const KEYWORDS = [
+    { metricIdx: 0, words: ['качество'] },
+    { metricIdx: 1, words: ['оценка'] },
+    { metricIdx: 2, words: ['выработка'] },
+    { metricIdx: 3, words: ['эффективность'] },
+    { metricIdx: 4, words: ['опоздания', 'опоздание'] },
+    { metricIdx: 5, words: ['посторонние', 'сайты'] },
+  ];
+
+  const headerCells = (rows[headerRow] || []).map(v => norm(v));
+  const subRowCells = (rows[headerRow + 1] || []).map(v => norm(v));
+
+  /* Для каждой метрики ищем первую колонку, в заголовке которой
+     встречается ключевое слово. */
+  const metricCols = [];
+  for (const kw of KEYWORDS) {
+    let found = -1;
+    for (let c = 0; c < headerCells.length; c++) {
+      const cell = headerCells[c];
+      if (kw.words.some(w => cell.includes(w))) {
+        found = c;
+        break;
+      }
+    }
+    if (found >= 0) metricCols.push({ excelCol: found, metricIdx: kw.metricIdx });
+  }
+
+  /* 3. Колонка «ИТОГО БАЛЛОВ» */
+  let scoreCol = -1;
+  for (let c = 0; c < headerCells.length; c++) {
+    if (headerCells[c].includes('итого')) {
+      scoreCol = c;
+      break;
+    }
+  }
+
+  /* 4. Определяем, есть ли подзаголовочная строка под шапкой.
+        Признак: ниже шапки в тех же колонках встречаются слова
+        «значение», «баллы», «минуты», «факты» и т.п. */
+  const SUBHEAD_HINTS = ['значение', 'баллы', 'минуты', 'факты', 'балл', 'эффективность'];
+  const hasSubHeader = subRowCells.some(c => SUBHEAD_HINTS.some(h => c.includes(h)));
+
+  /* 5. Стартовая строка данных — после заголовка(ов).
+        Дальше всё равно дополнительно проверим в основной функции
+        (там ищется первая строка, где A=число и есть имя). */
+  const dataStartRow = headerRow + (hasSubHeader ? 2 : 1);
+
+  return {
+    nameCol: operatorCol,
+    metricCols,
+    scoreCol,
+    headerRow,
+    dataStartRow,
+  };
+}
+
 /* ── Основная функция парсинга ───────────────────────────── */
 function parseExcelAndApply(file, weekIndex) {
   if (typeof XLSX === 'undefined') {
@@ -121,8 +186,19 @@ function parseExcelAndApply(file, weekIndex) {
       const sheet = workbook.Sheets[workbook.SheetNames[0]];
       const rows  = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: null, raw: true });
 
-      if (rows.length < EXCEL_LAYOUT.firstDataRowMin + 1) {
+      if (rows.length < 3) {
         setImportStatus('Файл слишком короткий — нет строк с данными.', 'error');
+        return;
+      }
+
+      /* Автоопределение структуры */
+      const layout = detectLayout(rows);
+      if (!layout) {
+        setImportStatus('Не удалось распознать структуру файла: не найдена колонка «Оператор» в заголовке.', 'error');
+        return;
+      }
+      if (layout.metricCols.length === 0 || layout.scoreCol < 0) {
+        setImportStatus('Не удалось распознать колонки метрик или «ИТОГО БАЛЛОВ» в заголовке.', 'error');
         return;
       }
 
@@ -134,14 +210,13 @@ function parseExcelAndApply(file, weekIndex) {
       const warnings = [];
       const missingOperators = [];
 
-      /* Идём со строки 4 (индекс 3), но если первая строка с числом в A
-         встречается позже — стартуем оттуда. */
-      let startRow = EXCEL_LAYOUT.firstDataRowMin;
-      for (let r = EXCEL_LAYOUT.firstDataRowMin; r < rows.length; r++) {
-        const numCell  = rows[r] && rows[r][0];
-        const nameCell = rows[r] && rows[r][EXCEL_LAYOUT.nameCol];
-        if (numCell !== null && numCell !== undefined && !isNaN(parseFloat(numCell))
-            && nameCell && String(nameCell).trim()) {
+      /* Ищем фактический старт данных: строка, где есть имя в nameCol
+         и (опционально) число в колонке A. */
+      let startRow = layout.dataStartRow;
+      for (let r = layout.dataStartRow; r < rows.length; r++) {
+        const row = rows[r] || [];
+        const nameCell = row[layout.nameCol];
+        if (nameCell && String(nameCell).trim()) {
           startRow = r;
           break;
         }
@@ -151,7 +226,7 @@ function parseExcelAndApply(file, weekIndex) {
         const row = rows[r];
         if (!row) { continue; }
 
-        const rawName = row[EXCEL_LAYOUT.nameCol];
+        const rawName = row[layout.nameCol];
         if (!rawName || !String(rawName).trim()) {
           // Пустая строка — конец данных, прекращаем
           break;
@@ -174,14 +249,14 @@ function parseExcelAndApply(file, weekIndex) {
         const arr = WEEKLY_DATA[weekIndex][op.facIdx][op.opIdx];
 
         /* Заполняем 6 метрик */
-        EXCEL_LAYOUT.metricCols.forEach(({ excelCol, metricIdx }) => {
+        layout.metricCols.forEach(({ excelCol, metricIdx }) => {
           if (metricIdx < arr.length) {
             arr[metricIdx] = toNum(row[excelCol]);
           }
         });
 
         /* Итоговый балл — напрямую из Excel, никаких пересчётов */
-        const scoreFromExcel = toNum(row[EXCEL_LAYOUT.scoreCol]);
+        const scoreFromExcel = toNum(row[layout.scoreCol]);
         arr[scoreIdx] = Math.round(scoreFromExcel * 10) / 10;
 
         imported++;
